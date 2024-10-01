@@ -6,9 +6,7 @@ import com.rkecom.ui.model.CategoryModel;
 import java.util.function.Function;
 
 public class CategoryMapper {
-    public CategoryMapper ( ) {
 
-    }
     //model to entity
     public static final Function<CategoryModel, Category> toEntity = categoryModel-> Category.builder ()
             .name ( categoryModel.getName () ).build ();

@@ -2,7 +2,7 @@ package com.rkecom.controller;
 
 import com.rkecom.config.AppConstants;
 import com.rkecom.ui.model.CategoryModel;
-import com.rkecom.payload.CategoryResponse;
+import com.rkecom.response.CategoryResponse;
 import com.rkecom.service.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

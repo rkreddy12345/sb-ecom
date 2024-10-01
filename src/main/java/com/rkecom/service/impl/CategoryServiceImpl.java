@@ -5,7 +5,7 @@ import com.rkecom.db.entity.Category;
 import com.rkecom.exception.APIException;
 import com.rkecom.exception.ResourceNotFoundException;
 import com.rkecom.objects.mapper.CategoryMapper;
-import com.rkecom.payload.CategoryResponse;
+import com.rkecom.response.CategoryResponse;
 import com.rkecom.repository.CategoryRepository;
 import com.rkecom.service.CategoryService;
 import com.rkecom.ui.model.CategoryModel;

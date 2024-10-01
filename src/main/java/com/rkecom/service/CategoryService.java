@@ -1,7 +1,7 @@
 package com.rkecom.service;
 
 import com.rkecom.ui.model.CategoryModel;
-import com.rkecom.payload.CategoryResponse;
+import com.rkecom.response.CategoryResponse;
 
 public interface CategoryService {
     CategoryModel createCategory( CategoryModel category);

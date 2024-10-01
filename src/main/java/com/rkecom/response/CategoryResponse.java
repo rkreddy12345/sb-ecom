@@ -1,4 +1,4 @@
-package com.rkecom.payload;
+package com.rkecom.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.rkecom.ui.model.CategoryModel;

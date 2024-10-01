@@ -3,7 +3,7 @@ package com.rkecom.exception.handler;
 import com.rkecom.config.AppConstants;
 import com.rkecom.exception.APIException;
 import com.rkecom.exception.ResourceNotFoundException;
-import com.rkecom.payload.ErrorResponse;
+import com.rkecom.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
