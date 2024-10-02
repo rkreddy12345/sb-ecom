@@ -1,6 +1,6 @@
 package com.rkecom.controller;
 
-import com.rkecom.response.ProductResponse;
+import com.rkecom.core.response.ApiResponse;
 import com.rkecom.service.ProductService;
 import com.rkecom.ui.model.ProductModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +16,13 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @PostMapping("/admin/categories/{categoryId}/product")
+    @PostMapping("/admin/categories/{categoryId}/products")
     public ResponseEntity< ProductModel > addProduct( @PathVariable Long categoryId, @RequestBody ProductModel productModel) {
         return ResponseEntity.ok().body(productService.addProduct(categoryId, productModel));
     }
 
     @GetMapping("/public/products")
-    public ResponseEntity< ProductResponse > getAllProducts() {
+    public ResponseEntity< ApiResponse<ProductModel> > getAllProducts() {
         return ResponseEntity.ok().body(productService.getAllProducts());
     }
 }

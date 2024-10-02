@@ -1,4 +1,4 @@
-package com.rkecom.response;
+package com.rkecom.core.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;

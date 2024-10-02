@@ -3,6 +3,7 @@ package com.rkecom.objects.mapper;
 import com.rkecom.db.entity.Category;
 import com.rkecom.ui.model.CategoryModel;
 
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class CategoryMapper {
@@ -15,4 +16,9 @@ public class CategoryMapper {
             .id( category.getId () )
             .name ( category.getName () )
             .build ();
+
+    public static final BiFunction<Category, CategoryModel, Category> toUpdatedEntity = (existingCategory, categoryModel)-> {
+        existingCategory.setName(categoryModel.getName ());
+        return existingCategory;
+    };
 }

@@ -2,7 +2,7 @@ package com.rkecom.controller;
 
 import com.rkecom.config.AppConstants;
 import com.rkecom.ui.model.CategoryModel;
-import com.rkecom.response.CategoryResponse;
+import com.rkecom.core.response.ApiResponse;
 import com.rkecom.service.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ public class CategoryController {
     }
 
     @GetMapping("/public/categories")
-    public ResponseEntity< CategoryResponse > getAllCategories(
+    public ResponseEntity< ApiResponse<CategoryModel> > getAllCategories(
             @RequestParam(defaultValue = AppConstants.PAGE_NUMBER) Integer page,
             @RequestParam(defaultValue = AppConstants.PAGE_SIZE) Integer size,
             @RequestParam(defaultValue = AppConstants.SORT_CATEGORIES_BY_ID) String sortBy,

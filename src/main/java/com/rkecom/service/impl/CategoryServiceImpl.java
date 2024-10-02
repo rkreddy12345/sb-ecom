@@ -1,11 +1,12 @@
 package com.rkecom.service.impl;
 
 import com.rkecom.config.AppConstants;
+import com.rkecom.core.response.util.ApiResponseUtil;
 import com.rkecom.db.entity.Category;
-import com.rkecom.exception.APIException;
+import com.rkecom.exception.ApiException;
 import com.rkecom.exception.ResourceNotFoundException;
 import com.rkecom.objects.mapper.CategoryMapper;
-import com.rkecom.response.CategoryResponse;
+import com.rkecom.core.response.ApiResponse;
 import com.rkecom.repository.CategoryRepository;
 import com.rkecom.service.CategoryService;
 import com.rkecom.ui.model.CategoryModel;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,11 +30,12 @@ public class CategoryServiceImpl implements CategoryService {
         this.categoryRepository = categoryRepository;
     }
     @Override
+    @Transactional
     public CategoryModel createCategory ( CategoryModel categoryModel ) {
         Category category = CategoryMapper.toEntity.apply ( categoryModel );
         Optional<Category> optionalCategory = categoryRepository.findByName(categoryModel.getName());
         if(optionalCategory.isPresent()) {
-            throw new APIException ( "category already exists with name-" + categoryModel.getName() );
+            throw new ApiException ( "category already exists with name-" + categoryModel.getName() );
         }else{
             Category savedCategory = categoryRepository.save(category);
             return CategoryMapper.toModel.apply ( savedCategory );
@@ -40,46 +43,35 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryResponse getAllCategories ( Integer page, Integer size, String sortBy, String sortOrder ) {
+    @Transactional(readOnly = true)
+    public ApiResponse<CategoryModel> getAllCategories ( Integer page, Integer size, String sortBy, String sortOrder ) {
         Sort sort=sortOrder.equalsIgnoreCase ( AppConstants.SORT_IN_ASC )
                 ? Sort.by ( sortBy ).ascending ()
                 : Sort.by ( sortBy ).descending ();
        Page<Category> categoryPage = categoryRepository.findAll ( PageRequest.of ( page, size , sort ) );
        List<Category> categories = categoryPage.getContent ();
        if(categories.isEmpty()) {
-           throw new APIException ( "No categories found" );
+           throw new ApiException ( "No categories found" );
        }else{
-           List<CategoryModel> categoryModels = categories.stream().map (
-                   category -> CategoryMapper.toModel.apply ( category )
-           ).toList ();
+           List<CategoryModel> categoryModels = categories.stream()
+                   .map ( CategoryMapper.toModel )
+                   .toList ();
 
-            return buildCategoryResponse ( categoryModels, categoryPage );
+            return ApiResponseUtil.buildApiResponse ( categoryModels, categoryPage );
        }
     }
 
-    private static CategoryResponse buildCategoryResponse ( List < CategoryModel > categoryModels, Page < Category > categoryPage ) {
-        return CategoryResponse.builder ()
-                .content ( categoryModels )
-                .pageNumber ( categoryPage.getNumber () )
-                .pageSize ( categoryPage.getSize () )
-                .totalElements ( categoryPage.getTotalElements () )
-                .totalPages ( categoryPage.getTotalPages () )
-                .isFirstPage ( categoryPage.isFirst () )
-                .isLastPage ( categoryPage.isLast () )
-                .build();
-    }
-
     @Override
+    @Transactional
     public CategoryModel updateCategory ( CategoryModel categoryModel, Long id ) {
-        Category category=CategoryMapper.toEntity.apply ( categoryModel );
-        Category categoryToUpdate = categoryRepository.findById ( id )
+        Category existingCategory = categoryRepository.findById ( id )
                 .orElseThrow (()->new ResourceNotFoundException ("category", "id", id));
-        categoryToUpdate.setName ( category.getName() );
-        Category updatedCategory=categoryRepository.save(categoryToUpdate);
-        return CategoryMapper.toModel.apply ( updatedCategory );
+        Category upadatedCategory=CategoryMapper.toUpdatedEntity.apply ( existingCategory , categoryModel );
+        return CategoryMapper.toModel.apply ( categoryRepository.save(upadatedCategory ) );
     }
 
     @Override
+    @Transactional
     public CategoryModel deleteCategoryById ( Long id ) {
         Category category = categoryRepository.findById ( id )
                 .orElseThrow (()->new ResourceNotFoundException ("category", "id", id));

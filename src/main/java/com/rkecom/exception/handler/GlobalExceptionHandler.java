@@ -1,9 +1,9 @@
 package com.rkecom.exception.handler;
 
 import com.rkecom.config.AppConstants;
-import com.rkecom.exception.APIException;
+import com.rkecom.exception.ApiException;
 import com.rkecom.exception.ResourceNotFoundException;
-import com.rkecom.response.ErrorResponse;
+import com.rkecom.core.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -47,8 +47,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status ( ex.getHttpStatus () ).body ( errorResponse );
     }
 
-    @ExceptionHandler(APIException.class)
-    public ResponseEntity< ErrorResponse > handleAPIException ( APIException ex){
+    @ExceptionHandler( ApiException.class)
+    public ResponseEntity< ErrorResponse > handleAPIException ( ApiException ex){
         ErrorResponse errorResponse= ErrorResponse.builder ()
                 .error ( ErrorResponse.ErrorDetails.builder ().message ( ex.getMessage () ).build ())
                 .status ( ex.getHttpStatus ().getReasonPhrase () )
