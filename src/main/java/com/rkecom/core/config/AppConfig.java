@@ -1,4 +1,4 @@
-package com.rkecom.config;
+package com.rkecom.core.config;
 
 import org.springframework.context.annotation.Configuration;
 

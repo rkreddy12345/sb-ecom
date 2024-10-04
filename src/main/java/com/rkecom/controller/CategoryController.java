@@ -1,20 +1,23 @@
 package com.rkecom.controller;
 
-import com.rkecom.config.AppConstants;
-import com.rkecom.ui.model.CategoryModel;
+import com.rkecom.core.util.AppConstants;
 import com.rkecom.core.response.ApiResponse;
 import com.rkecom.service.CategoryService;
+import com.rkecom.ui.model.CategoryModel;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/api/v1")
 @RestController
+@Validated
 public class CategoryController {
 
-    private CategoryService categoryService;
+    private final CategoryService categoryService;
     @Autowired
     public CategoryController ( CategoryService categoryService ) {
         this.categoryService = categoryService;
@@ -24,7 +27,7 @@ public class CategoryController {
     public ResponseEntity< ApiResponse<CategoryModel> > getAllCategories(
             @RequestParam(defaultValue = AppConstants.PAGE_NUMBER) Integer page,
             @RequestParam(defaultValue = AppConstants.PAGE_SIZE) Integer size,
-            @RequestParam(defaultValue = AppConstants.SORT_CATEGORIES_BY_ID) String sortBy,
+            @RequestParam(defaultValue = AppConstants.SORT_BY_ID) String sortBy,
             @RequestParam(defaultValue = AppConstants.SORT_IN_ASC) String sortOrder) {
         return ResponseEntity.ok (categoryService.getAllCategories (page, size, sortBy, sortOrder));
     }
@@ -35,7 +38,7 @@ public class CategoryController {
     }
 
     @PutMapping("/admin/categories/{id}")
-    public ResponseEntity< CategoryModel > updateCategory( @Valid @RequestBody CategoryModel categoryDTO, @PathVariable Long id) {
+    public ResponseEntity< CategoryModel > updateCategory( @Valid @RequestBody CategoryModel categoryDTO, @PathVariable @Positive Long id) {
         return ResponseEntity.ok (categoryService.updateCategory ( categoryDTO , id ));
     }
 

@@ -1,13 +1,13 @@
 package com.rkecom.service.impl;
 
-import com.rkecom.config.AppConstants;
+import com.rkecom.core.util.AppConstants;
 import com.rkecom.core.response.util.ApiResponseUtil;
 import com.rkecom.db.entity.Category;
-import com.rkecom.exception.ApiException;
-import com.rkecom.exception.ResourceNotFoundException;
+import com.rkecom.core.exception.ApiException;
+import com.rkecom.core.exception.ResourceNotFoundException;
 import com.rkecom.objects.mapper.CategoryMapper;
 import com.rkecom.core.response.ApiResponse;
-import com.rkecom.repository.CategoryRepository;
+import com.rkecom.data.repository.CategoryRepository;
 import com.rkecom.service.CategoryService;
 import com.rkecom.ui.model.CategoryModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,9 +21,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional(readOnly = true)
 public class CategoryServiceImpl implements CategoryService {
 
-    private CategoryRepository categoryRepository;
+    private final CategoryRepository categoryRepository;
 
     @Autowired
     public CategoryServiceImpl(CategoryRepository categoryRepository) {
@@ -43,7 +44,6 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public ApiResponse<CategoryModel> getAllCategories ( Integer page, Integer size, String sortBy, String sortOrder ) {
         Sort sort=sortOrder.equalsIgnoreCase ( AppConstants.SORT_IN_ASC )
                 ? Sort.by ( sortBy ).ascending ()

@@ -1,4 +1,4 @@
-package com.rkecom.repository;
+package com.rkecom.data.repository;
 
 import com.rkecom.db.entity.Category;
 import org.springframework.stereotype.Repository;

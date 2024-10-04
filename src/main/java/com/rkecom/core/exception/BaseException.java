@@ -1,4 +1,4 @@
-package com.rkecom.exception;
+package com.rkecom.core.exception;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -3,11 +3,11 @@ package com.rkecom.service.impl;
 import com.rkecom.core.response.ApiResponse;
 import com.rkecom.db.entity.Category;
 import com.rkecom.db.entity.Product;
-import com.rkecom.exception.ApiException;
-import com.rkecom.exception.ResourceNotFoundException;
+import com.rkecom.core.exception.ApiException;
+import com.rkecom.core.exception.ResourceNotFoundException;
 import com.rkecom.objects.mapper.ProductMapper;
-import com.rkecom.repository.CategoryRepository;
-import com.rkecom.repository.ProductRepository;
+import com.rkecom.data.repository.CategoryRepository;
+import com.rkecom.data.repository.ProductRepository;
 import com.rkecom.service.ProductService;
 import com.rkecom.ui.model.ProductModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +17,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class ProductServiceImpl implements ProductService {
-    private ProductRepository productRepository;
-    private CategoryRepository categoryRepository;
+    private final ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
     @Autowired
     public ProductServiceImpl(ProductRepository productRepository, CategoryRepository categoryRepository) {
         this.productRepository = productRepository;
@@ -40,7 +41,6 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public ApiResponse< ProductModel > getAllProducts ( ) {
         List <Product> products=productRepository.findAll ();
         if(products.isEmpty ()){
@@ -53,5 +53,20 @@ public class ProductServiceImpl implements ProductService {
                     .content ( productModels )
                     .build ();
         }
+    }
+
+    @Override
+    public ApiResponse < ProductModel > getProductsByCategory ( Long categoryId ) {
+        Category category=categoryRepository.findById ( categoryId ).orElseThrow (
+                ()->new ResourceNotFoundException ("category", "id", categoryId)
+        );
+        List<Product> products=productRepository.findByCategoryOrderByPriceAsc ( category );
+        if(products.isEmpty ()){
+            throw new ApiException ( "No products found in this category." );
+        }
+        List<ProductModel> productModels=products.stream ().map ( ProductMapper.toModel).toList ();
+        return ApiResponse.<ProductModel>builder ()
+                .content ( productModels )
+                .build ();
     }
 }

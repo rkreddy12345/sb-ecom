@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1")
 public class ProductController {
-    private ProductService productService;
+    private final ProductService productService;
     @Autowired
     public ProductController(ProductService productService) {
         this.productService = productService;
@@ -24,5 +24,10 @@ public class ProductController {
     @GetMapping("/public/products")
     public ResponseEntity< ApiResponse<ProductModel> > getAllProducts() {
         return ResponseEntity.ok().body(productService.getAllProducts());
+    }
+
+    @GetMapping("/admin/categories/{categoryId}/products")
+    public ResponseEntity<ApiResponse<ProductModel>> getProductsByCategory(@PathVariable Long categoryId) {
+        return ResponseEntity.ok().body(productService.getProductsByCategory(categoryId));
     }
 }
