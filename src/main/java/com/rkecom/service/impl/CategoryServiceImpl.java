@@ -1,13 +1,13 @@
 package com.rkecom.service.impl;
 
-import com.rkecom.core.util.AppConstants;
-import com.rkecom.core.response.util.ApiResponseUtil;
-import com.rkecom.db.entity.Category;
 import com.rkecom.core.exception.ApiException;
 import com.rkecom.core.exception.ResourceNotFoundException;
-import com.rkecom.objects.mapper.CategoryMapper;
 import com.rkecom.core.response.ApiResponse;
+import com.rkecom.core.response.util.ApiResponseUtil;
+import com.rkecom.core.util.Pagination;
 import com.rkecom.data.repository.CategoryRepository;
+import com.rkecom.db.entity.Category;
+import com.rkecom.objects.mapper.CategoryMapper;
 import com.rkecom.service.CategoryService;
 import com.rkecom.ui.model.CategoryModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,20 +45,11 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public ApiResponse<CategoryModel> getAllCategories ( Integer page, Integer size, String sortBy, String sortOrder ) {
-        Sort sort=sortOrder.equalsIgnoreCase ( AppConstants.SORT_IN_ASC )
+        Sort sort=sortOrder.equalsIgnoreCase ( Pagination.SORT_IN_ASC )
                 ? Sort.by ( sortBy ).ascending ()
                 : Sort.by ( sortBy ).descending ();
        Page<Category> categoryPage = categoryRepository.findAll ( PageRequest.of ( page, size , sort ) );
-       List<Category> categories = categoryPage.getContent ();
-       if(categories.isEmpty()) {
-           throw new ApiException ( "No categories found" );
-       }else{
-           List<CategoryModel> categoryModels = categories.stream()
-                   .map ( CategoryMapper.toModel )
-                   .toList ();
-
-            return ApiResponseUtil.buildApiResponse ( categoryModels, categoryPage );
-       }
+        return getCategoryResponse ( categoryPage );
     }
 
     @Override
@@ -77,5 +68,24 @@ public class CategoryServiceImpl implements CategoryService {
                 .orElseThrow (()->new ResourceNotFoundException ("category", "id", id));
         categoryRepository.delete (category);
         return CategoryMapper.toModel.apply ( category );
+    }
+
+    @Override
+    public ApiResponse < CategoryModel > getAllCategories ( Integer page, Integer size ) {
+        Page<Category> categoryPage = categoryRepository.findAll ( PageRequest.of ( page, size ) );
+        return getCategoryResponse ( categoryPage );
+    }
+
+    private static ApiResponse < CategoryModel > getCategoryResponse ( Page < Category > categoryPage ) {
+        List <Category> categories = categoryPage.getContent ();
+        if(categories.isEmpty()) {
+            throw new ApiException ( "No categories found" );
+        }else{
+            List<CategoryModel> categoryModels = categories.stream()
+                    .map ( CategoryMapper.toModel )
+                    .toList ();
+
+            return ApiResponseUtil.buildApiResponse ( categoryModels, categoryPage );
+        }
     }
 }

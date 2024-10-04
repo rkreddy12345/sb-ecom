@@ -1,7 +1,7 @@
 package com.rkecom.controller;
 
-import com.rkecom.core.util.AppConstants;
 import com.rkecom.core.response.ApiResponse;
+import com.rkecom.core.util.Pagination;
 import com.rkecom.service.CategoryService;
 import com.rkecom.ui.model.CategoryModel;
 import jakarta.validation.Valid;
@@ -23,13 +23,20 @@ public class CategoryController {
         this.categoryService = categoryService;
     }
 
+    @GetMapping("/public/categories/sorted")
+    public ResponseEntity< ApiResponse<CategoryModel> > getAllCategories(
+            @RequestParam(defaultValue = Pagination.PAGE_NUMBER) Integer page,
+            @RequestParam(defaultValue = Pagination.PAGE_SIZE) Integer size,
+            @RequestParam(defaultValue = Pagination.SORT_BY_ID) String sortBy,
+            @RequestParam(defaultValue = Pagination.SORT_IN_ASC) String sortOrder) {
+        return ResponseEntity.ok (categoryService.getAllCategories (page, size, sortBy, sortOrder));
+    }
+
     @GetMapping("/public/categories")
     public ResponseEntity< ApiResponse<CategoryModel> > getAllCategories(
-            @RequestParam(defaultValue = AppConstants.PAGE_NUMBER) Integer page,
-            @RequestParam(defaultValue = AppConstants.PAGE_SIZE) Integer size,
-            @RequestParam(defaultValue = AppConstants.SORT_BY_ID) String sortBy,
-            @RequestParam(defaultValue = AppConstants.SORT_IN_ASC) String sortOrder) {
-        return ResponseEntity.ok (categoryService.getAllCategories (page, size, sortBy, sortOrder));
+            @RequestParam(defaultValue = Pagination.PAGE_NUMBER) Integer page,
+            @RequestParam(defaultValue = Pagination.PAGE_SIZE) Integer size) {
+        return ResponseEntity.ok (categoryService.getAllCategories (page, size));
     }
 
     @PostMapping("/admin/categories")
