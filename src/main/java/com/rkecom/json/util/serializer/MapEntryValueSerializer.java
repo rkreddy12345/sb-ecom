@@ -36,13 +36,9 @@ public class MapEntryValueSerializer<K, V> extends JsonSerializer<Map<K, V>> imp
             K key = entry.getKey();
             V value = entry.getValue();
 
-            boolean includeValue = true;
-            if (excludeNull && Objects.isNull(value)) {
-                includeValue = false;
-            }
-            if (excludeEmpty && value instanceof String valueString && valueString.isEmpty()) {
-                includeValue = false;
-            }
+            boolean includeValue = !(excludeNull && Objects.isNull(value))
+                    && !(excludeEmpty && value instanceof String valueString && valueString.isEmpty());
+
             if (includeValue) {
                 gen.writeObjectField(key.toString(), value);
             }
