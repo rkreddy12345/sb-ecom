@@ -1,4 +1,4 @@
-package com.rkecom.service.impl;
+package com.rkecom.crud.service.impl;
 
 import com.rkecom.core.response.ApiResponse;
 import com.rkecom.db.entity.Category;
@@ -8,7 +8,7 @@ import com.rkecom.core.exception.ResourceNotFoundException;
 import com.rkecom.objects.mapper.ProductMapper;
 import com.rkecom.data.repository.CategoryRepository;
 import com.rkecom.data.repository.ProductRepository;
-import com.rkecom.service.ProductService;
+import com.rkecom.crud.service.ProductService;
 import com.rkecom.ui.model.ProductModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -68,5 +68,15 @@ public class ProductServiceImpl implements ProductService {
         return ApiResponse.<ProductModel>builder ()
                 .content ( productModels )
                 .build ();
+    }
+
+    @Override
+    public ApiResponse < ProductModel > searchProductsByKeyword ( String keyword ) {
+        List<Product> products=productRepository.findByNameLikeIgnoreCase ( '%'+keyword+'%' );
+        if(products.isEmpty ()){
+            throw new ApiException ( "No products found." );
+        }
+        List<ProductModel> productModels = products.stream ().map ( ProductMapper.toModel ).toList ();
+        return ApiResponse.<ProductModel>builder ().content ( productModels ).build ();
     }
 }

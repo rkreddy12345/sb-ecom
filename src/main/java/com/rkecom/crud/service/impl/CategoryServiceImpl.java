@@ -1,4 +1,4 @@
-package com.rkecom.service.impl;
+package com.rkecom.crud.service.impl;
 
 import com.rkecom.core.exception.ApiException;
 import com.rkecom.core.exception.ResourceNotFoundException;
@@ -8,7 +8,7 @@ import com.rkecom.core.util.Pagination;
 import com.rkecom.data.repository.CategoryRepository;
 import com.rkecom.db.entity.Category;
 import com.rkecom.objects.mapper.CategoryMapper;
-import com.rkecom.service.CategoryService;
+import com.rkecom.crud.service.CategoryService;
 import com.rkecom.ui.model.CategoryModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

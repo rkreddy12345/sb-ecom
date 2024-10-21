@@ -1,9 +1,9 @@
-package com.rkecom.service;
+package com.rkecom.crud.service;
 
 import com.rkecom.ui.model.CategoryModel;
 import com.rkecom.core.response.ApiResponse;
 
-public interface CategoryService {
+public interface CategoryService extends BaseService{
     CategoryModel createCategory( CategoryModel category);
     ApiResponse<CategoryModel> getAllCategories( Integer page, Integer size, String sortBy, String order);
     CategoryModel updateCategory( CategoryModel category, Long id);

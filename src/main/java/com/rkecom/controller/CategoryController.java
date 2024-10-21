@@ -2,7 +2,7 @@ package com.rkecom.controller;
 
 import com.rkecom.core.response.ApiResponse;
 import com.rkecom.core.util.Pagination;
-import com.rkecom.service.CategoryService;
+import com.rkecom.crud.service.CategoryService;
 import com.rkecom.ui.model.CategoryModel;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;

@@ -8,5 +8,6 @@ import java.util.List;
 
 @Repository
 public interface ProductRepository extends BaseRepository<Product, Long> {
-    List <Product> findByCategoryOrderByPriceAsc( Category category);
+    List<Product> findByCategoryOrderByPriceAsc( Category category);
+    List<Product> findByNameLikeIgnoreCase(String keyword);
 }
