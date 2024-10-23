@@ -1,5 +1,6 @@
 package com.rkecom.objects.mapper;
 
+import com.rkecom.core.util.MapperUtil;
 import com.rkecom.db.entity.Product;
 import com.rkecom.ui.model.ProductModel;
 
@@ -35,15 +36,18 @@ public class ProductMapper {
                 .build();
     };
 
-    public static final BiFunction < Product, ProductModel, Product> toUpdatedEntity = ( product, productModel) -> {
-        product.setName( productModel.getName() );
-        product.setDescription( productModel.getDescription() );
-        product.setImage( productModel.getImage() );
-        product.setPrice( productModel.getPrice() );
-        product.setDiscount( productModel.getDiscount() );
-        product.setSpecialPrice( productModel.getSpecialPrice() );
-        product.setQuantity( productModel.getQuantity() );
-        product.setCategory( productModel.getCategory() );
+    public static final BiFunction<Product, ProductModel, Product> toUpdatedEntity = ( product, productModel ) -> {
+        MapperUtil.updateField ( product.getName (), productModel.getName (), product::setName );
+        MapperUtil.updateField ( product.getDescription (), productModel.getDescription (), product::setDescription );
+        MapperUtil.updateField ( product.getImage (), productModel.getImage (), product::setImage );
+        MapperUtil.updateField ( product.getPrice (), productModel.getPrice (), product::setPrice );
+        MapperUtil.updateField ( product.getDiscount (), productModel.getDiscount (), product::setDiscount );
+        MapperUtil.updateField ( product.getSpecialPrice (), productModel.getSpecialPrice (), product::setSpecialPrice );
+        MapperUtil.updateField ( product.getQuantity (), productModel.getQuantity (), product::setQuantity );
+        MapperUtil.updateField ( product.getCategory (), productModel.getCategory (), product::setCategory );
         return product;
     };
+
+
+
 }

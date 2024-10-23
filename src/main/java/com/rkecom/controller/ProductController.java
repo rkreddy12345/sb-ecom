@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -36,4 +39,20 @@ public class ProductController {
     public ResponseEntity<ApiResponse<ProductModel>> getProductsByKeyword(@PathVariable String keyword) {
         return new ResponseEntity <> ( productService.searchProductsByKeyword ( keyword ), HttpStatus.FOUND );
     }
+
+    @PutMapping("/admin/products/{productId}")
+    public ResponseEntity<ProductModel> updateProduct( @PathVariable Long productId, @RequestBody ProductModel productModel) {
+        return ResponseEntity.ok (productService.updateProductById ( productId, productModel ));
+    }
+
+    @DeleteMapping("/admin/products/{productId}")
+    public ResponseEntity<ProductModel> deleteProductById(@PathVariable Long productId) {
+        return ResponseEntity.ok (productService.deleteProductById(productId));
+    }
+
+    @PutMapping("/admin/products/{productId}/image")
+    public ResponseEntity<ProductModel> updateProductImage(@PathVariable Long productId, @RequestParam MultipartFile image) throws IOException {
+        return ResponseEntity.ok(productService.updateProductImage ( productId, image ));
+    }
+
 }

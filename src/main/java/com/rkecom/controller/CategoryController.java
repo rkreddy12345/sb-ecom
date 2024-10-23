@@ -25,8 +25,8 @@ public class CategoryController {
 
     @GetMapping("/public/categories/sorted")
     public ResponseEntity< ApiResponse<CategoryModel> > getAllCategories(
-            @RequestParam(defaultValue = Pagination.PAGE_NUMBER) Integer page,
-            @RequestParam(defaultValue = Pagination.PAGE_SIZE) Integer size,
+            @RequestParam(defaultValue = Pagination.DEFAULT_PAGE_NUMBER) Integer page,
+            @RequestParam(defaultValue = Pagination.DEFAULT_PAGE_SIZE) Integer size,
             @RequestParam(defaultValue = Pagination.SORT_BY_ID) String sortBy,
             @RequestParam(defaultValue = Pagination.SORT_IN_ASC) String sortOrder) {
         return ResponseEntity.ok (categoryService.getAllCategories (page, size, sortBy, sortOrder));
@@ -34,8 +34,8 @@ public class CategoryController {
 
     @GetMapping("/public/categories")
     public ResponseEntity< ApiResponse<CategoryModel> > getAllCategories(
-            @RequestParam(defaultValue = Pagination.PAGE_NUMBER) Integer page,
-            @RequestParam(defaultValue = Pagination.PAGE_SIZE) Integer size) {
+            @RequestParam(defaultValue = Pagination.DEFAULT_PAGE_NUMBER) Integer page,
+            @RequestParam(defaultValue = Pagination.DEFAULT_PAGE_SIZE) Integer size) {
         return ResponseEntity.ok (categoryService.getAllCategories (page, size));
     }
 
