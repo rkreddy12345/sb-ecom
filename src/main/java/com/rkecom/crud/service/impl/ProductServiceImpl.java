@@ -3,6 +3,7 @@ package com.rkecom.crud.service.impl;
 import com.rkecom.core.exception.ApiException;
 import com.rkecom.core.exception.ResourceNotFoundException;
 import com.rkecom.core.response.ApiResponse;
+import com.rkecom.core.response.util.ApiResponseUtil;
 import com.rkecom.crud.service.FileService;
 import com.rkecom.crud.service.ProductService;
 import com.rkecom.data.repository.CategoryRepository;
@@ -13,6 +14,8 @@ import com.rkecom.objects.mapper.ProductMapper;
 import com.rkecom.ui.model.ProductModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -56,18 +59,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ApiResponse< ProductModel > getAllProducts ( ) {
-        List <Product> products=productRepository.findAll ();
-        if(products.isEmpty ()){
-            throw new ApiException ( "No products found" );
-        }else{
-            List< ProductModel > productModels = products.stream ()
-                    .map ( ProductMapper.toModel )
-                    .toList ();
-            return ApiResponse.<ProductModel>builder ()
-                    .content ( productModels )
-                    .build ();
-        }
+    public ApiResponse< ProductModel > getAllProducts (Integer page, Integer size) {
+        Page<Product> productPage = productRepository.findAll ( PageRequest.of ( page, size ) );
+        return getProductResponse ( productPage );
     }
 
     @Override
@@ -137,5 +131,18 @@ public class ProductServiceImpl implements ProductService {
             throw new ApiException ( "product already exists with name - " + name );
         }
         return false;
+    }
+
+    private static ApiResponse < ProductModel > getProductResponse ( Page < Product > productPage ) {
+        List <Product> products = productPage.getContent ();
+        if(products.isEmpty()) {
+            throw new ApiException ( "No products found" );
+        }else{
+            List<ProductModel> productModels = products.stream()
+                    .map ( ProductMapper.toModel )
+                    .toList ();
+
+            return ApiResponseUtil.buildApiResponse ( productModels, productPage );
+        }
     }
 }

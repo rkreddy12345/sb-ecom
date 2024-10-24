@@ -1,6 +1,7 @@
 package com.rkecom.controller;
 
 import com.rkecom.core.response.ApiResponse;
+import com.rkecom.core.util.Pagination;
 import com.rkecom.crud.service.ProductService;
 import com.rkecom.ui.model.ProductModel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +27,10 @@ public class ProductController {
     }
 
     @GetMapping("/public/products")
-    public ResponseEntity< ApiResponse<ProductModel> > getAllProducts() {
-        return ResponseEntity.ok().body(productService.getAllProducts());
+    public ResponseEntity< ApiResponse<ProductModel> > getAllProducts(
+            @RequestParam(defaultValue = Pagination.DEFAULT_PAGE_NUMBER) Integer page,
+            @RequestParam(defaultValue = Pagination.DEFAULT_PAGE_SIZE) Integer size) {
+        return ResponseEntity.ok().body(productService.getAllProducts(page, size));
     }
 
     @GetMapping("/public/categories/{categoryId}/products")

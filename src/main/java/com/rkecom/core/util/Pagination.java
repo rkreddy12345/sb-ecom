@@ -2,7 +2,7 @@ package com.rkecom.core.util;
 
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Pagination {
@@ -20,7 +20,7 @@ public class Pagination {
 
     public static Map <String, String> generatePaginationLinks( int currentPage, int totalPages ) {
         final String baseUrl = ServletUriComponentsBuilder.fromCurrentRequestUri ().replaceQuery ( null ).toUriString ();
-        Map<String, String> links = new HashMap <> ();
+        Map<String, String> links = new LinkedHashMap <> ();
         links.put("first", baseUrl+"?page=0");
         links.put("previous", currentPage>0 ? baseUrl+"?page="+(currentPage-1) : null);
         links.put("current", baseUrl+"?page="+currentPage);
