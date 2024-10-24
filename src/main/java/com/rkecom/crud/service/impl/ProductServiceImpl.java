@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -26,8 +27,10 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final FileService fileService;
+
     @Value ( "${project.images}" )
     private String path;
+
     @Autowired
     public ProductServiceImpl( ProductRepository productRepository, CategoryRepository categoryRepository, FileService fileService ) {
         this.productRepository = productRepository;
@@ -39,12 +42,16 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public ProductModel addProduct ( Long categoryId, ProductModel productModel ) {
         Product product = ProductMapper.toEntity.apply ( productModel );
+        Product savedProduct=null;
         Category category=categoryRepository.findById(categoryId).orElseThrow (
                 ()->new ResourceNotFoundException ("category", "id", categoryId)
         );
-        product.setCategory(category);
-        product.setSpecialPrice ( productModel.getPrice ()*(productModel.getDiscount ()*0.01) );
-        Product savedProduct=productRepository.save ( product );
+        if(!isProductExistsWithName ( productModel.getName () )){
+            product.setCategory(category);
+            product.setSpecialPrice ( productModel.getPrice ()*(productModel.getDiscount ()*0.01) );
+            savedProduct=productRepository.save ( product );
+        }
+
         return ProductMapper.toModel.apply ( savedProduct );
     }
 
@@ -94,8 +101,13 @@ public class ProductServiceImpl implements ProductService {
         Product existingProduct=productRepository.findById ( id ).orElseThrow (
                 ()->new ResourceNotFoundException ("product", "id", id)
         );
-        Product updatedEntity = ProductMapper.toUpdatedEntity.apply (existingProduct, productModel);
-        return ProductMapper.toModel.apply ( productRepository.save(updatedEntity) );
+        Product product=null;
+        if(!isProductExistsWithName ( productModel.getName () )){
+            Product updatedEntity = ProductMapper.toUpdatedEntity.apply (existingProduct, productModel);
+            product=productRepository.save(updatedEntity);
+        }
+
+        return ProductMapper.toModel.apply (product );
     }
 
     @Override
@@ -117,5 +129,13 @@ public class ProductServiceImpl implements ProductService {
         String fileName= fileService.uploadFile (path, image);
         product.setImage(fileName);
         return ProductMapper.toModel.apply ( productRepository.save ( product ) );
+    }
+
+    private boolean isProductExistsWithName(String name){
+        Optional <Product> product = productRepository.findByName(name);
+        if(product.isPresent()) {
+            throw new ApiException ( "product already exists with name - " + name );
+        }
+        return false;
     }
 }

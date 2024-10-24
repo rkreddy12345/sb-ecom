@@ -30,17 +30,16 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryServiceImpl(CategoryRepository categoryRepository) {
         this.categoryRepository = categoryRepository;
     }
+
     @Override
     @Transactional
     public CategoryModel createCategory ( CategoryModel categoryModel ) {
-        Category category = CategoryMapper.toEntity.apply ( categoryModel );
-        Optional<Category> optionalCategory = categoryRepository.findByName(categoryModel.getName());
-        if(optionalCategory.isPresent()) {
-            throw new ApiException ( "category already exists with name-" + categoryModel.getName() );
-        }else{
-            Category savedCategory = categoryRepository.save(category);
-            return CategoryMapper.toModel.apply ( savedCategory );
+        Category savedCategory=null;
+        if(!isCategoryExistsWithName ( categoryModel.getName() )){
+            Category category = CategoryMapper.toEntity.apply ( categoryModel );
+            savedCategory = categoryRepository.save(category);
         }
+        return CategoryMapper.toModel.apply ( savedCategory );
     }
 
     @Override
@@ -57,8 +56,12 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryModel updateCategory ( CategoryModel categoryModel, Long id ) {
         Category existingCategory = categoryRepository.findById ( id )
                 .orElseThrow (()->new ResourceNotFoundException ("category", "id", id));
-        Category upadatedCategory=CategoryMapper.toUpdatedEntity.apply ( existingCategory , categoryModel );
-        return CategoryMapper.toModel.apply ( categoryRepository.save(upadatedCategory ) );
+        Category category=null;
+        if(!isCategoryExistsWithName ( categoryModel.getName() )){
+            Category upadatedCategory=CategoryMapper.toUpdatedEntity.apply ( existingCategory , categoryModel );
+            category=categoryRepository.save(upadatedCategory );
+        }
+        return CategoryMapper.toModel.apply ( category );
     }
 
     @Override
@@ -88,4 +91,13 @@ public class CategoryServiceImpl implements CategoryService {
             return ApiResponseUtil.buildApiResponse ( categoryModels, categoryPage );
         }
     }
+
+    private boolean isCategoryExistsWithName(String name){
+        Optional<Category> category = categoryRepository.findByName(name);
+        if(category.isPresent()) {
+           throw new ApiException ( "category already exists with name - " + name );
+        }
+        return false;
+    }
+
 }
