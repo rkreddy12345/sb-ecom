@@ -34,12 +34,11 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public CategoryModel createCategory ( CategoryModel categoryModel ) {
-        Category savedCategory=null;
-        if(!isCategoryExistsWithName ( categoryModel.getName() )){
-            Category category = CategoryMapper.toEntity.apply ( categoryModel );
-            savedCategory = categoryRepository.save(category);
+        if(isCategoryExistsWithName ( categoryModel.getName(), null )){
+            throw new ApiException ( "category already exists with name : " + categoryModel.getName() );
         }
-        return CategoryMapper.toModel.apply ( savedCategory );
+        Category category = CategoryMapper.toEntity.apply ( categoryModel );
+        return CategoryMapper.toModel.apply ( categoryRepository.save ( category ) );
     }
 
     @Override
@@ -48,7 +47,7 @@ public class CategoryServiceImpl implements CategoryService {
                 ? Sort.by ( sortBy ).ascending ()
                 : Sort.by ( sortBy ).descending ();
        Page<Category> categoryPage = categoryRepository.findAll ( PageRequest.of ( page, size , sort ) );
-        return getCategoryResponse ( categoryPage );
+        return buildCategoryResponse ( categoryPage );
     }
 
     @Override
@@ -56,12 +55,11 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryModel updateCategory ( CategoryModel categoryModel, Long id ) {
         Category existingCategory = categoryRepository.findById ( id )
                 .orElseThrow (()->new ResourceNotFoundException ("category", "id", id));
-        Category category=null;
-        if(!isCategoryExistsWithName ( categoryModel.getName() )){
-            Category upadatedCategory=CategoryMapper.toUpdatedEntity.apply ( existingCategory , categoryModel );
-            category=categoryRepository.save(upadatedCategory );
+        if(isCategoryExistsWithName ( categoryModel.getName(), id )){
+            throw new ApiException ( "category already exists with name - " + categoryModel.getName() );
         }
-        return CategoryMapper.toModel.apply ( category );
+        Category toUpdatedEntity = CategoryMapper.toUpdatedEntity.apply ( existingCategory, categoryModel );
+        return CategoryMapper.toModel.apply ( categoryRepository.save(toUpdatedEntity ) );
     }
 
     @Override
@@ -76,10 +74,10 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public ApiResponse < CategoryModel > getAllCategories ( Integer page, Integer size ) {
         Page<Category> categoryPage = categoryRepository.findAll ( PageRequest.of ( page, size ) );
-        return getCategoryResponse ( categoryPage );
+        return buildCategoryResponse ( categoryPage );
     }
 
-    private static ApiResponse < CategoryModel > getCategoryResponse ( Page < Category > categoryPage ) {
+    private static ApiResponse < CategoryModel > buildCategoryResponse ( Page < Category > categoryPage ) {
         List <Category> categories = categoryPage.getContent ();
         if(categories.isEmpty()) {
             throw new ApiException ( "No categories found" );
@@ -92,12 +90,9 @@ public class CategoryServiceImpl implements CategoryService {
         }
     }
 
-    private boolean isCategoryExistsWithName(String name){
+    private boolean isCategoryExistsWithName(String name, Long id){
         Optional<Category> category = categoryRepository.findByName(name);
-        if(category.isPresent()) {
-           throw new ApiException ( "category already exists with name - " + name );
-        }
-        return false;
+        return category.isPresent() && (id==null || !category.get ().getId ().equals ( id ));
     }
 
 }

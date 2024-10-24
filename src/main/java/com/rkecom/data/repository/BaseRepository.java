@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @NoRepositoryBean
 public interface BaseRepository< E, ID extends Serializable > extends JpaRepository<E, ID> {
-    public Optional < E > findByName ( String name );
+    public Optional < E > findByName ( String name);
 }

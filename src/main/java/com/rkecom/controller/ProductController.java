@@ -29,8 +29,10 @@ public class ProductController {
     @GetMapping("/public/products")
     public ResponseEntity< ApiResponse<ProductModel> > getAllProducts(
             @RequestParam(defaultValue = Pagination.DEFAULT_PAGE_NUMBER) Integer page,
-            @RequestParam(defaultValue = Pagination.DEFAULT_PAGE_SIZE) Integer size) {
-        return ResponseEntity.ok().body(productService.getAllProducts(page, size));
+            @RequestParam(defaultValue = Pagination.DEFAULT_PAGE_SIZE) Integer size,
+            @RequestParam(defaultValue = Pagination.SORT_BY_ID) String sortBy,
+            @RequestParam(defaultValue = Pagination.SORT_IN_ASC) String sortOrder) {
+        return ResponseEntity.ok().body(productService.getAllProducts(page, size, sortBy, sortOrder));
     }
 
     @GetMapping("/public/categories/{categoryId}/products")
