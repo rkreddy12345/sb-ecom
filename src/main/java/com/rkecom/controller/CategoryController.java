@@ -40,13 +40,13 @@ public class CategoryController {
     }
 
     @PostMapping("/admin/categories")
-    public ResponseEntity< CategoryModel > createCategory( @Valid @RequestBody CategoryModel categoryDTO) {
-       return new ResponseEntity <> ( categoryService.createCategory ( categoryDTO ), HttpStatus.CREATED );
+    public ResponseEntity< CategoryModel > createCategory( @Valid @RequestBody CategoryModel categoryModel) {
+       return new ResponseEntity <> ( categoryService.createCategory ( categoryModel ), HttpStatus.CREATED );
     }
 
     @PutMapping("/admin/categories/{id}")
-    public ResponseEntity< CategoryModel > updateCategory( @Valid @RequestBody CategoryModel categoryDTO, @PathVariable @Positive Long id) {
-        return ResponseEntity.ok (categoryService.updateCategory ( categoryDTO , id ));
+    public ResponseEntity< CategoryModel > updateCategory( @Valid @RequestBody CategoryModel categoryModel, @PathVariable @Positive Long id) {
+        return ResponseEntity.ok (categoryService.updateCategory ( categoryModel , id ));
     }
 
     @DeleteMapping("/admin/categories/{id}")
