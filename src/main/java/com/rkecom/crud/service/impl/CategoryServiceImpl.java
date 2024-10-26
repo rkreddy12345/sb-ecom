@@ -5,11 +5,12 @@ import com.rkecom.core.exception.ResourceNotFoundException;
 import com.rkecom.core.response.ApiResponse;
 import com.rkecom.core.response.util.ApiResponseUtil;
 import com.rkecom.core.util.Pagination;
+import com.rkecom.crud.service.CategoryService;
 import com.rkecom.data.repository.CategoryRepository;
 import com.rkecom.db.entity.Category;
 import com.rkecom.objects.mapper.CategoryMapper;
-import com.rkecom.crud.service.CategoryService;
 import com.rkecom.ui.model.CategoryModel;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,14 +23,11 @@ import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
+@RequiredArgsConstructor (onConstructor_ = {@Autowired})
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
-
-    @Autowired
-    public CategoryServiceImpl(CategoryRepository categoryRepository) {
-        this.categoryRepository = categoryRepository;
-    }
+    private final CategoryMapper categoryMapper;
 
     @Override
     @Transactional
@@ -37,8 +35,8 @@ public class CategoryServiceImpl implements CategoryService {
         if(isCategoryExistsWithName ( categoryModel.getName(), null )){
             throw new ApiException ( "category already exists with name : " + categoryModel.getName() );
         }
-        Category category = CategoryMapper.toEntity.apply ( categoryModel );
-        return CategoryMapper.toModel.apply ( categoryRepository.save ( category ) );
+        Category category = categoryMapper.toEntity ().apply ( categoryModel );
+        return categoryMapper.toModel().apply ( categoryRepository.save ( category ) );
     }
 
     @Override
@@ -58,8 +56,8 @@ public class CategoryServiceImpl implements CategoryService {
         if(isCategoryExistsWithName ( categoryModel.getName(), id )){
             throw new ApiException ( "category already exists with name - " + categoryModel.getName() );
         }
-        Category toUpdatedEntity = CategoryMapper.toUpdatedEntity.apply ( existingCategory, categoryModel );
-        return CategoryMapper.toModel.apply ( categoryRepository.save(toUpdatedEntity ) );
+        Category toUpdatedEntity = categoryMapper.toUpdatedEntity().apply ( existingCategory, categoryModel );
+        return categoryMapper.toModel().apply ( categoryRepository.save(toUpdatedEntity ) );
     }
 
     @Override
@@ -68,7 +66,7 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categoryRepository.findById ( id )
                 .orElseThrow (()->new ResourceNotFoundException ("category", "id", id));
         categoryRepository.delete (category);
-        return CategoryMapper.toModel.apply ( category );
+        return categoryMapper.toModel().apply ( category );
     }
 
     @Override
@@ -77,13 +75,13 @@ public class CategoryServiceImpl implements CategoryService {
         return buildCategoryResponse ( categoryPage );
     }
 
-    private static ApiResponse < CategoryModel > buildCategoryResponse ( Page < Category > categoryPage ) {
+    private ApiResponse < CategoryModel > buildCategoryResponse ( Page < Category > categoryPage ) {
         List <Category> categories = categoryPage.getContent ();
         if(categories.isEmpty()) {
             throw new ApiException ( "No categories found" );
         }else{
             List<CategoryModel> categoryModels = categories.stream()
-                    .map ( CategoryMapper.toModel )
+                    .map ( categoryMapper.toModel() )
                     .toList ();
 
             return ApiResponseUtil.buildApiResponse ( categoryModels, categoryPage );

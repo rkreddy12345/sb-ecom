@@ -13,6 +13,7 @@ import com.rkecom.db.entity.Category;
 import com.rkecom.db.entity.Product;
 import com.rkecom.objects.mapper.ProductMapper;
 import com.rkecom.ui.model.ProductModel;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -28,20 +29,15 @@ import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
+@RequiredArgsConstructor (onConstructor_ = {@Autowired})
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
     private final FileService fileService;
+    private final ProductMapper productMapper;
 
     @Value ( "${project.images}" )
     private String path;
-
-    @Autowired
-    public ProductServiceImpl( ProductRepository productRepository, CategoryRepository categoryRepository, FileService fileService ) {
-        this.productRepository = productRepository;
-        this.categoryRepository=categoryRepository;
-        this.fileService = fileService;
-    }
 
     @Override
     @Transactional
@@ -52,10 +48,10 @@ public class ProductServiceImpl implements ProductService {
         if(isProductExistsWithName ( productModel.getName (), null )){
             throw new ApiException ( "product already exists with name - " + productModel.getName () );
         }
-        Product product=ProductMapper.toEntity.apply ( productModel );
+        Product product=productMapper.toEntity().apply ( productModel );
         product.setCategory(category);
         product.setSpecialPrice ( productModel.getPrice ()*(productModel.getDiscount ()*0.01) );
-        return ProductMapper.toModel.apply ( productRepository.save ( product ) );
+        return productMapper.toModel().apply ( productRepository.save ( product ) );
     }
 
     @Override
@@ -76,7 +72,7 @@ public class ProductServiceImpl implements ProductService {
         if(products.isEmpty ()){
             throw new ApiException ( "No products found in this category." );
         }
-        List<ProductModel> productModels=products.stream ().map ( ProductMapper.toModel).toList ();
+        List<ProductModel> productModels=products.stream ().map ( productMapper.toModel()).toList ();
         return ApiResponse.<ProductModel>builder ()
                 .content ( productModels )
                 .build ();
@@ -88,7 +84,7 @@ public class ProductServiceImpl implements ProductService {
         if(products.isEmpty ()){
             throw new ApiException ( "No products found." );
         }
-        List<ProductModel> productModels = products.stream ().map ( ProductMapper.toModel ).toList ();
+        List<ProductModel> productModels = products.stream ().map ( productMapper.toModel() ).toList ();
         return ApiResponse.<ProductModel>builder ().content ( productModels ).build ();
     }
 
@@ -100,8 +96,8 @@ public class ProductServiceImpl implements ProductService {
         if(isProductExistsWithName ( productModel.getName (), id )){
             throw new ApiException ( "Product already exists with name - "+productModel.getName () );
         }
-        Product updatedEntity = ProductMapper.toUpdatedEntity.apply ( existingProduct, productModel );
-        return ProductMapper.toModel.apply ( productRepository.save ( updatedEntity ) );
+        Product updatedEntity = productMapper.toUpdatedEntity().apply ( existingProduct, productModel );
+        return productMapper.toModel().apply ( productRepository.save ( updatedEntity ) );
     }
 
     @Override
@@ -111,7 +107,7 @@ public class ProductServiceImpl implements ProductService {
                 ()->new ResourceNotFoundException ("product", "id", productId)
         );
         productRepository.deleteById ( productId );
-        return ProductMapper.toModel.apply ( product );
+        return productMapper.toModel().apply ( product );
     }
 
     @Override
@@ -122,7 +118,7 @@ public class ProductServiceImpl implements ProductService {
         );
         String fileName= fileService.uploadFile (path, image);
         product.setImage(fileName);
-        return ProductMapper.toModel.apply ( productRepository.save ( product ) );
+        return productMapper.toModel().apply ( productRepository.save ( product ) );
     }
 
     private boolean isProductExistsWithName(String name, Long id){
@@ -130,13 +126,13 @@ public class ProductServiceImpl implements ProductService {
         return product.isPresent() && (id==null || !product.get().getId().equals(id));
     }
 
-    private static ApiResponse < ProductModel > buildProductResponse ( Page < Product > productPage ) {
+    private ApiResponse < ProductModel > buildProductResponse ( Page < Product > productPage ) {
         List <Product> products = productPage.getContent ();
         if(products.isEmpty()) {
             throw new ApiException ( "No products found" );
         }else{
             List<ProductModel> productModels = products.stream()
-                    .map ( ProductMapper.toModel )
+                    .map ( productMapper.toModel() )
                     .toList ();
 
             return ApiResponseUtil.buildApiResponse ( productModels, productPage );
