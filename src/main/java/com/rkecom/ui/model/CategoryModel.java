@@ -16,6 +16,6 @@ import lombok.NoArgsConstructor;
 public class CategoryModel {
     private Long id;
     @NotBlank(message = "Category name is required")
-    @Size(min = 3, max = 20, message = "Category name should be between 3 and 20 characters")
+    @Size(min = 3, max = 10, message = "Category name should be between 3 and 20 characters")
     private String name;
 }

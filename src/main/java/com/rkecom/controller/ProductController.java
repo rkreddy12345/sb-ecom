@@ -4,6 +4,7 @@ import com.rkecom.core.response.ApiResponse;
 import com.rkecom.core.util.Pagination;
 import com.rkecom.crud.service.ProductService;
 import com.rkecom.ui.model.ProductModel;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,7 @@ public class ProductController {
     }
 
     @PostMapping("/admin/categories/{categoryId}/products")
-    public ResponseEntity< ProductModel > addProduct( @PathVariable Long categoryId, @RequestBody ProductModel productModel) {
+    public ResponseEntity< ProductModel > addProduct( @PathVariable Long categoryId, @Valid @RequestBody ProductModel productModel) {
         return ResponseEntity.ok().body(productService.addProduct(categoryId, productModel));
     }
 
@@ -46,7 +47,7 @@ public class ProductController {
     }
 
     @PutMapping("/admin/products/{productId}")
-    public ResponseEntity<ProductModel> updateProduct( @PathVariable Long productId, @RequestBody ProductModel productModel) {
+    public ResponseEntity<ProductModel> updateProduct( @PathVariable Long productId, @Valid @RequestBody ProductModel productModel) {
         return ResponseEntity.ok (productService.updateProductById ( productId, productModel ));
     }
 

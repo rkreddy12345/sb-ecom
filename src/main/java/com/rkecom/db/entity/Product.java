@@ -34,6 +34,6 @@ public class Product {
     private Double specialPrice;
 
     @ManyToOne
-    @JoinColumn(name = "CATEGORY_ID")
+    @JoinColumn(name = "category_id")
     private Category category;
 }
