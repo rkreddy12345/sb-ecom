@@ -57,23 +57,16 @@ public class MapEntryValueSerializer<K, V> extends JsonSerializer<Map<K, V>> imp
      * Utility method to determine if a value is considered "empty."
      */
     private boolean isEmptyValue(Object value) {
-        if (value == null) {
+        if(Objects.isNull(value)) {
             return true;
         }
-        if (value instanceof String valueString) {
-            return valueString.isEmpty();
-        }
-
-        if (value instanceof Collection) {
-            return ((Collection<?>) value).isEmpty();
-        }
-        if (value instanceof Map) {
-            return ((Map<?, ?>) value).isEmpty();
-        }
-        if (value.getClass().isArray()) {
-            return ((Object[]) value).length == 0;
-        }
-        return false;
+        return switch (value){
+            case String string->string.isEmpty();
+            case Object[] array->array.length==0;
+            case Collection<?> collection->collection.isEmpty();
+            case Map<?, ?> map->map.isEmpty();
+            default -> false;
+        };
     }
 
     @Override

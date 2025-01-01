@@ -20,7 +20,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername ( String username ) throws UsernameNotFoundException {
-        User user=userRepository.findUserByUsername ( username )
+        User user=userRepository.findUserByUserName ( username )
                 .orElseThrow ( () -> new UsernameNotFoundException ( "User Not Found" ) );
 
         return EcomUser.builder ()
