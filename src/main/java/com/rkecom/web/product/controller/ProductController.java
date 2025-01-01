@@ -1,9 +1,9 @@
-package com.rkecom.controller;
+package com.rkecom.web.product.controller;
 
 import com.rkecom.core.response.ApiResponse;
 import com.rkecom.core.util.Pagination;
 import com.rkecom.crud.service.ProductService;
-import com.rkecom.ui.model.ProductModel;
+import com.rkecom.ui.model.product.ProductModel;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

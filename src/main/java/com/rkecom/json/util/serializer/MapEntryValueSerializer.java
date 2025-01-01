@@ -5,13 +5,20 @@ import com.fasterxml.jackson.databind.BeanProperty;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.ContextualSerializer;
-import com.rkecom.json.util.annotation.JsonExcludeNullAndEmpty;
+import com.rkecom.json.util.annotation.JsonConditionalInclude;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 
-//custom serializer to handle map's null, empty values
+/**
+ * Custom serializer for {@link Map} objects that selectively excludes null and empty values
+ * based on the configuration provided through annotations.
+ *<br>
+ * This serializer checks the values of map entries and determines if they should be included in the serialized output.
+ * It excludes entries where the value is either null or empty, according to the specified conditions.
+ */
 public class MapEntryValueSerializer<K, V> extends JsonSerializer<Map<K, V>> implements ContextualSerializer {
 
     private final boolean excludeNull;
@@ -37,7 +44,7 @@ public class MapEntryValueSerializer<K, V> extends JsonSerializer<Map<K, V>> imp
             V value = entry.getValue();
 
             boolean includeValue = !(excludeNull && Objects.isNull(value))
-                    && !(excludeEmpty && value instanceof String valueString && valueString.isEmpty());
+                    && !(excludeEmpty && isEmptyValue(value));
 
             if (includeValue) {
                 gen.writeObjectField(key.toString(), value);
@@ -46,10 +53,33 @@ public class MapEntryValueSerializer<K, V> extends JsonSerializer<Map<K, V>> imp
         gen.writeEndObject();
     }
 
+    /**
+     * Utility method to determine if a value is considered "empty."
+     */
+    private boolean isEmptyValue(Object value) {
+        if (value == null) {
+            return true;
+        }
+        if (value instanceof String valueString) {
+            return valueString.isEmpty();
+        }
+
+        if (value instanceof Collection) {
+            return ((Collection<?>) value).isEmpty();
+        }
+        if (value instanceof Map) {
+            return ((Map<?, ?>) value).isEmpty();
+        }
+        if (value.getClass().isArray()) {
+            return ((Object[]) value).length == 0;
+        }
+        return false;
+    }
+
     @Override
     public JsonSerializer<?> createContextual(SerializerProvider prov, BeanProperty property) {
-        if (property != null && property.getAnnotation(JsonExcludeNullAndEmpty.class) != null) {
-            JsonExcludeNullAndEmpty annotation = property.getAnnotation(JsonExcludeNullAndEmpty.class);
+        if (property != null && property.getAnnotation(JsonConditionalInclude.class) != null) {
+            JsonConditionalInclude annotation = property.getAnnotation(JsonConditionalInclude.class);
             return new MapEntryValueSerializer<>(annotation.excludeNull(), annotation.excludeEmpty());
         }
         return new MapEntryValueSerializer<>();

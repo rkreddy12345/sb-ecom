@@ -1,7 +1,7 @@
 package com.rkecom.crud.service;
 
 import com.rkecom.core.response.ApiResponse;
-import com.rkecom.ui.model.ProductModel;
+import com.rkecom.ui.model.product.ProductModel;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;

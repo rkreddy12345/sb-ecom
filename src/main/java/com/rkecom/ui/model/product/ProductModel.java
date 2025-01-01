@@ -1,7 +1,7 @@
-package com.rkecom.ui.model;
+package com.rkecom.ui.model.product;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.rkecom.db.entity.Category;
+import com.rkecom.db.entity.product.Category;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -17,11 +17,11 @@ import lombok.NoArgsConstructor;
 public class ProductModel {
     private Long id;
     @NotBlank (message = "Product name is required")
-    @Size (min = 3, max = 10, message = "Category name should be between 3 and 20 characters")
+    @Size (min = 3, max = 10, message = "product name should be between 3 and 10 characters")
     private String name;
     private String image;
-    @NotBlank (message = "Product description is required")
-    @Size (min = 5, max = 20, message = "Category name should be between 3 and 20 characters")
+    @NotBlank (message = "product description is required")
+    @Size (min = 5, max = 20, message = "product description should be between 3 and 20 characters")
     private String description;
     private Integer quantity;
     private Double price;

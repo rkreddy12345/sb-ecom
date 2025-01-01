@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 @Target ( ElementType.FIELD )
 @Retention ( RetentionPolicy.RUNTIME )
-public @interface JsonExcludeNullAndEmpty {
+public @interface JsonConditionalInclude {
     boolean excludeNull() default false;
     boolean excludeEmpty() default false;
 }

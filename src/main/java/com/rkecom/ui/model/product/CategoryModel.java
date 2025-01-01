@@ -1,4 +1,4 @@
-package com.rkecom.ui.model;
+package com.rkecom.ui.model.product;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.NotBlank;
@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CategoryModel {
     private Long id;
-    @NotBlank(message = "Category name is required")
-    @Size(min = 3, max = 10, message = "Category name should be between 3 and 20 characters")
+    @NotBlank(message = "category name is required")
+    @Size(min = 3, max = 10, message = "category name should be between 3 and 20 characters")
     private String name;
 }
