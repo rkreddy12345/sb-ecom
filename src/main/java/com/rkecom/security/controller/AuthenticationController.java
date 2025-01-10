@@ -7,7 +7,6 @@ import com.rkecom.crud.user.service.UserService;
 import com.rkecom.data.user.repository.UserRepository;
 import com.rkecom.db.entity.user.Role;
 import com.rkecom.db.entity.user.RoleType;
-import com.rkecom.objects.user.mapper.UserMapper;
 import com.rkecom.security.jwt.util.JwtUtil;
 import com.rkecom.security.ui.model.LoginRequest;
 import com.rkecom.security.ui.model.SignupRequest;
@@ -45,7 +44,6 @@ public class AuthenticationController extends BaseController {
     private final UserService userService;
     private final RoleService roleService;
     private final PasswordEncoder passwordEncoder;
-    private final UserMapper userMapper;
     private final UserRepository userRepository;
 
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signupRequest) {

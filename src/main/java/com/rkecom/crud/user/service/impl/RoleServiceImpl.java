@@ -20,7 +20,7 @@ public class RoleServiceImpl implements RoleService {
     @Transactional(readOnly = true)
     public Role findByRoleType ( RoleType roleType ) {
         return roleRepository.findByRoleType ( roleType )
-                .orElseThrow (()->new ResourceNotFoundException ( ResourceConstants.ROLE, "roleName", roleName ) );
+                .orElseThrow (()->new ResourceNotFoundException ( ResourceConstants.ROLE, "roleName", roleType ) );
     }
 
     @Override
