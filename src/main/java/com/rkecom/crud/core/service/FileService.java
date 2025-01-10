@@ -1,4 +1,4 @@
-package com.rkecom.crud.service;
+package com.rkecom.crud.core.service;
 
 import org.springframework.web.multipart.MultipartFile;
 

@@ -1,14 +1,15 @@
-package com.rkecom.crud.service.impl;
+package com.rkecom.crud.product.service.impl;
 
 import com.rkecom.core.exception.ApiException;
 import com.rkecom.core.exception.ResourceNotFoundException;
 import com.rkecom.core.response.ApiResponse;
 import com.rkecom.core.response.util.ApiResponseUtil;
-import com.rkecom.core.util.Pagination;
-import com.rkecom.crud.service.CategoryService;
+import com.rkecom.core.util.PaginationUtil;
+import com.rkecom.core.util.ResourceConstants;
+import com.rkecom.crud.product.service.CategoryService;
 import com.rkecom.data.product.repository.CategoryRepository;
 import com.rkecom.db.entity.product.Category;
-import com.rkecom.objects.mapper.CategoryMapper;
+import com.rkecom.objects.product.mapper.CategoryMapper;
 import com.rkecom.ui.model.product.CategoryModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public ApiResponse<CategoryModel> getAllCategories ( Integer page, Integer size, String sortBy, String sortOrder ) {
-        Sort sort=sortOrder.equalsIgnoreCase ( Pagination.SORT_IN_ASC )
+        Sort sort=sortOrder.equalsIgnoreCase ( PaginationUtil.SORT_IN_ASC )
                 ? Sort.by ( sortBy ).ascending ()
                 : Sort.by ( sortBy ).descending ();
        Page<Category> categoryPage = categoryRepository.findAll ( PageRequest.of ( page, size , sort ) );
@@ -52,7 +53,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     public CategoryModel updateCategory ( CategoryModel categoryModel, Long id ) {
         Category existingCategory = categoryRepository.findById ( id )
-                .orElseThrow (()->new ResourceNotFoundException ("category", "id", id));
+                .orElseThrow (()->new ResourceNotFoundException ( ResourceConstants.CATEGORY, "id", id));
         if(isCategoryExistsWithName ( categoryModel.getName(), id )){
             throw new ApiException ( "category already exists with name - " + categoryModel.getName() );
         }
@@ -64,7 +65,7 @@ public class CategoryServiceImpl implements CategoryService {
     @Transactional
     public CategoryModel deleteCategoryById ( Long id ) {
         Category category = categoryRepository.findById ( id )
-                .orElseThrow (()->new ResourceNotFoundException ("category", "id", id));
+                .orElseThrow (()->new ResourceNotFoundException (ResourceConstants.CATEGORY, "id", id));
         categoryRepository.delete (category);
         return categoryMapper.toModel().apply ( category );
     }

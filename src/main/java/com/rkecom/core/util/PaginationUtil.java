@@ -5,9 +5,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class Pagination {
-    private Pagination() {
-        super();
+public class PaginationUtil {
+    private PaginationUtil() {
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
     public static final String DEFAULT_PAGE_NUMBER = "0";
     public static final String DEFAULT_PAGE_SIZE = "30";

@@ -1,4 +1,4 @@
-package com.rkecom.objects.mapper;
+package com.rkecom.objects.product.mapper;
 
 import com.rkecom.core.util.MapperUtil;
 import com.rkecom.db.entity.product.Product;

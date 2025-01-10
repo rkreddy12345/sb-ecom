@@ -1,6 +1,6 @@
-package com.rkecom.crud.service.impl;
+package com.rkecom.crud.product.service.impl;
 
-import com.rkecom.crud.service.FileService;
+import com.rkecom.crud.core.service.FileService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 

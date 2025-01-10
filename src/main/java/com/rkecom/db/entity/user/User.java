@@ -2,16 +2,15 @@ package com.rkecom.db.entity.user;
 
 import com.rkecom.db.entity.product.Product;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Data
+@AllArgsConstructor
+@Builder
 @NoArgsConstructor ( access = AccessLevel.PROTECTED )
 @Table(name = "APP_USER", uniqueConstraints = {
         @UniqueConstraint ( columnNames = "USER_NAME"),

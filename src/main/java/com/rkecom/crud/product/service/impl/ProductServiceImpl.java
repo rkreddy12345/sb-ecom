@@ -1,17 +1,18 @@
-package com.rkecom.crud.service.impl;
+package com.rkecom.crud.product.service.impl;
 
 import com.rkecom.core.exception.ApiException;
 import com.rkecom.core.exception.ResourceNotFoundException;
 import com.rkecom.core.response.ApiResponse;
 import com.rkecom.core.response.util.ApiResponseUtil;
-import com.rkecom.core.util.Pagination;
-import com.rkecom.crud.service.FileService;
-import com.rkecom.crud.service.ProductService;
+import com.rkecom.core.util.PaginationUtil;
+import com.rkecom.core.util.ResourceConstants;
+import com.rkecom.crud.core.service.FileService;
+import com.rkecom.crud.product.service.ProductService;
 import com.rkecom.data.product.repository.CategoryRepository;
 import com.rkecom.data.product.repository.ProductRepository;
 import com.rkecom.db.entity.product.Category;
 import com.rkecom.db.entity.product.Product;
-import com.rkecom.objects.mapper.ProductMapper;
+import com.rkecom.objects.product.mapper.ProductMapper;
 import com.rkecom.ui.model.product.ProductModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +44,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public ProductModel addProduct ( Long categoryId, ProductModel productModel ) {
         Category category=categoryRepository.findById(categoryId).orElseThrow (
-                ()->new ResourceNotFoundException ("category", "id", categoryId)
+                ()->new ResourceNotFoundException (ResourceConstants.CATEGORY, "id", categoryId)
         );
         if(isProductExistsWithName ( productModel.getName (), null )){
             throw new ApiException ( "product already exists with name - " + productModel.getName () );
@@ -56,7 +57,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ApiResponse< ProductModel > getAllProducts (Integer page, Integer size, String sortBy, String sortOrder) {
-        Sort sort=sortOrder.equalsIgnoreCase ( Pagination.SORT_IN_ASC )
+        Sort sort=sortOrder.equalsIgnoreCase ( PaginationUtil.SORT_IN_ASC )
                 ?Sort.by ( Sort.Direction.ASC, sortBy )
                 :Sort.by ( Sort.Direction.DESC, sortBy );
         Page<Product> productPage = productRepository.findAll ( PageRequest.of ( page, size, sort ) );
@@ -92,7 +93,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public ProductModel updateProductById ( Long id, ProductModel productModel ) {
         Product existingProduct=productRepository.findById ( id )
-                .orElseThrow ( ()->new ResourceNotFoundException ("product", "id", id) );
+                .orElseThrow ( ()->new ResourceNotFoundException ( ResourceConstants.PRODUCT, "id", id) );
         if(isProductExistsWithName ( productModel.getName (), id )){
             throw new ApiException ( "Product already exists with name - "+productModel.getName () );
         }
@@ -104,7 +105,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public ProductModel deleteProductById ( Long productId ) {
         Product product = productRepository.findById ( productId ).orElseThrow (
-                ()->new ResourceNotFoundException ("product", "id", productId)
+                ()->new ResourceNotFoundException (ResourceConstants.PRODUCT, "id", productId)
         );
         productRepository.deleteById ( productId );
         return productMapper.toModel().apply ( product );
@@ -114,7 +115,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public ProductModel updateProductImage ( Long productId, MultipartFile image ) throws IOException {
         Product product = productRepository.findById ( productId ).orElseThrow (
-                ()->new ResourceNotFoundException ("product", "id", productId)
+                ()->new ResourceNotFoundException (ResourceConstants.PRODUCT, "id", productId)
         );
         String fileName= fileService.uploadFile (path, image);
         product.setImage(fileName);

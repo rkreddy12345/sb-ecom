@@ -1,8 +1,9 @@
 package com.rkecom.web.product.controller;
 
+import com.rkecom.core.controller.BaseController;
 import com.rkecom.core.response.ApiResponse;
-import com.rkecom.core.util.Pagination;
-import com.rkecom.crud.service.ProductService;
+import com.rkecom.core.util.PaginationUtil;
+import com.rkecom.crud.product.service.ProductService;
 import com.rkecom.ui.model.product.ProductModel;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,7 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/v1")
-public class ProductController {
+public class ProductController extends BaseController {
     private final ProductService productService;
     @Autowired
     public ProductController(ProductService productService) {
@@ -29,10 +30,10 @@ public class ProductController {
 
     @GetMapping("/public/products")
     public ResponseEntity< ApiResponse<ProductModel> > getAllProducts(
-            @RequestParam(defaultValue = Pagination.DEFAULT_PAGE_NUMBER) Integer page,
-            @RequestParam(defaultValue = Pagination.DEFAULT_PAGE_SIZE) Integer size,
-            @RequestParam(defaultValue = Pagination.SORT_BY_ID) String sortBy,
-            @RequestParam(defaultValue = Pagination.SORT_IN_ASC) String sortOrder) {
+            @RequestParam(defaultValue = PaginationUtil.DEFAULT_PAGE_NUMBER) Integer page,
+            @RequestParam(defaultValue = PaginationUtil.DEFAULT_PAGE_SIZE) Integer size,
+            @RequestParam(defaultValue = PaginationUtil.SORT_BY_ID) String sortBy,
+            @RequestParam(defaultValue = PaginationUtil.SORT_IN_ASC) String sortOrder) {
         return ResponseEntity.ok().body(productService.getAllProducts(page, size, sortBy, sortOrder));
     }
 

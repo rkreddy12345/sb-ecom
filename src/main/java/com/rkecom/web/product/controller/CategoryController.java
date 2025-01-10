@@ -1,8 +1,9 @@
 package com.rkecom.web.product.controller;
 
+import com.rkecom.core.controller.BaseController;
 import com.rkecom.core.response.ApiResponse;
-import com.rkecom.core.util.Pagination;
-import com.rkecom.crud.service.CategoryService;
+import com.rkecom.core.util.PaginationUtil;
+import com.rkecom.crud.product.service.CategoryService;
 import com.rkecom.ui.model.product.CategoryModel;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1")
 @RestController
 @Validated
-public class CategoryController {
+public class CategoryController extends BaseController {
 
     private final CategoryService categoryService;
     @Autowired
@@ -25,17 +26,17 @@ public class CategoryController {
 
     @GetMapping("/public/categories/sorted")
     public ResponseEntity< ApiResponse<CategoryModel> > getAllCategories(
-            @RequestParam(defaultValue = Pagination.DEFAULT_PAGE_NUMBER) Integer page,
-            @RequestParam(defaultValue = Pagination.DEFAULT_PAGE_SIZE) Integer size,
-            @RequestParam(defaultValue = Pagination.SORT_BY_ID) String sortBy,
-            @RequestParam(defaultValue = Pagination.SORT_IN_ASC) String sortOrder) {
+            @RequestParam(defaultValue = PaginationUtil.DEFAULT_PAGE_NUMBER) Integer page,
+            @RequestParam(defaultValue = PaginationUtil.DEFAULT_PAGE_SIZE) Integer size,
+            @RequestParam(defaultValue = PaginationUtil.SORT_BY_ID) String sortBy,
+            @RequestParam(defaultValue = PaginationUtil.SORT_IN_ASC) String sortOrder) {
         return ResponseEntity.ok (categoryService.getAllCategories (page, size, sortBy, sortOrder));
     }
 
     @GetMapping("/public/categories")
     public ResponseEntity< ApiResponse<CategoryModel> > getAllCategories(
-            @RequestParam(defaultValue = Pagination.DEFAULT_PAGE_NUMBER) Integer page,
-            @RequestParam(defaultValue = Pagination.DEFAULT_PAGE_SIZE) Integer size) {
+            @RequestParam(defaultValue = PaginationUtil.DEFAULT_PAGE_NUMBER) Integer page,
+            @RequestParam(defaultValue = PaginationUtil.DEFAULT_PAGE_SIZE) Integer size) {
         return ResponseEntity.ok (categoryService.getAllCategories (page, size));
     }
 

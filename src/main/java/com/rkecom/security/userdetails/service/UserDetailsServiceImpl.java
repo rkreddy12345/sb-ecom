@@ -2,7 +2,7 @@ package com.rkecom.security.userdetails.service;
 
 import com.rkecom.data.user.repository.UserRepository;
 import com.rkecom.db.entity.user.User;
-import com.rkecom.security.userdetails.EcomUser;
+import com.rkecom.security.userdetails.UserDetailsImpl;
 import com.rkecom.ui.model.user.UserModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         User user=userRepository.findUserByUserName ( username )
                 .orElseThrow ( () -> new UsernameNotFoundException ( "User Not Found" ) );
 
-        return EcomUser.builder ()
+        return UserDetailsImpl.builder ()
                 .user ( UserModel.builder ()
                         .userId ( user.getUserId () )
                         .userName ( user.getUserName () )
