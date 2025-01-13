@@ -14,6 +14,7 @@ public class PaginationUtil {
 
     public static final String SORT_BY_ID = "id";
     public static final String SORT_BY_NAME = "name";
+    public static final String SORT_BY_USERNAME = "username";
 
     public static final String SORT_IN_ASC = "asc";
     public static final String SORT_IN_DESC = "desc";

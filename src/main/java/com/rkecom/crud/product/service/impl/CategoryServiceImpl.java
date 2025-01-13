@@ -46,7 +46,7 @@ public class CategoryServiceImpl implements CategoryService {
                 ? Sort.by ( sortBy ).ascending ()
                 : Sort.by ( sortBy ).descending ();
        Page<Category> categoryPage = categoryRepository.findAll ( PageRequest.of ( page, size , sort ) );
-        return buildCategoryResponse ( categoryPage );
+        return buildCategoryApiResponse ( categoryPage );
     }
 
     @Override
@@ -73,10 +73,10 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public ApiResponse < CategoryModel > getAllCategories ( Integer page, Integer size ) {
         Page<Category> categoryPage = categoryRepository.findAll ( PageRequest.of ( page, size ) );
-        return buildCategoryResponse ( categoryPage );
+        return buildCategoryApiResponse ( categoryPage );
     }
 
-    private ApiResponse < CategoryModel > buildCategoryResponse ( Page < Category > categoryPage ) {
+    private ApiResponse < CategoryModel > buildCategoryApiResponse ( Page < Category > categoryPage ) {
         List <Category> categories = categoryPage.getContent ();
         if(categories.isEmpty()) {
             throw new ApiException ( "No categories found" );

@@ -20,9 +20,9 @@ import java.util.List;
 public class UserModel implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
-    @EqualsAndHashCode.Include
-    private Long userId;
 
+    private Long userId;
+    @EqualsAndHashCode.Include
     @NotBlank(message = "user name is required")
     @Size(min = 8, max = 15, message = "user name should have min 8 and max 15 characters")
     private String userName;

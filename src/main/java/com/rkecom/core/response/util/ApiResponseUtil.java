@@ -1,7 +1,7 @@
 package com.rkecom.core.response.util;
 
 import com.rkecom.core.response.ApiResponse;
-import com.rkecom.core.util.Pagination;
+import com.rkecom.core.util.PaginationUtil;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -20,7 +20,7 @@ public class ApiResponseUtil {
                 .totalPages ( page.getTotalPages () )
                 .isFirstPage ( page.isFirst () )
                 .isLastPage ( page.isLast () )
-                .links ( Pagination.generatePaginationLinks ( page.getNumber (), page.getTotalPages () ) )
+                .links ( PaginationUtil.generatePaginationLinks ( page.getNumber (), page.getTotalPages () ) )
                 .build ();
     }
 

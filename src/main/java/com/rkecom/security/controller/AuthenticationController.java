@@ -29,11 +29,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
 
-@RestController("/api/v1/auth")
+@RestController
+@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class AuthenticationController extends BaseController {
 
@@ -46,7 +48,8 @@ public class AuthenticationController extends BaseController {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
 
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signupRequest) {
+    @PostMapping("/register")
+    public ResponseEntity<Object> registerUser(@Valid @RequestBody SignupRequest signupRequest) {
         if(userService.existsByUsername ( signupRequest.getUsername() )){
             return ResponseEntity.status(HttpStatus.CONFLICT).body(
                     ErrorResponseUtil.buildErrorResponse ( "ERROR", "user name is already taken", HttpStatus.CONFLICT )
@@ -88,7 +91,7 @@ public class AuthenticationController extends BaseController {
     }
 
     @PostMapping ("/login")
-    public ResponseEntity <Object> authenticateUser( @RequestBody LoginRequest loginRequest ) {
+    public ResponseEntity <Object> authenticateUser( @Valid @RequestBody LoginRequest loginRequest ) {
         Authentication authentication;
         try{
             authentication=authenticationManager.authenticate ( new UsernamePasswordAuthenticationToken (loginRequest.getUsername(), loginRequest.getPassword()) );

@@ -1,5 +1,6 @@
 package com.rkecom.crud.user.service.impl;
 
+import com.rkecom.core.exception.ApiException;
 import com.rkecom.core.exception.ResourceNotFoundException;
 import com.rkecom.core.util.ResourceConstants;
 import com.rkecom.crud.user.service.RoleService;
@@ -27,5 +28,13 @@ public class RoleServiceImpl implements RoleService {
     @Transactional(readOnly = true)
     public boolean existsByRoleType ( RoleType roleType ) {
         return roleRepository.existsByRoleType ( roleType );
+    }
+
+    @Override
+    public Role save ( Role role ) {
+        if(existsByRoleType ( role.getRoleType () )) {
+            throw new ApiException ( "role already exists with "+role.getRoleType ().name () );
+        }
+        return roleRepository.save(role);
     }
 }

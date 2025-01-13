@@ -7,4 +7,5 @@ import com.rkecom.db.entity.user.RoleType;
 public interface RoleService extends BaseService {
     Role findByRoleType( RoleType roleType);
     boolean existsByRoleType( RoleType roleType);
+    Role save(Role role);
 }

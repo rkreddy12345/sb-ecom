@@ -7,6 +7,7 @@ import com.rkecom.crud.product.service.CategoryService;
 import com.rkecom.ui.model.product.CategoryModel;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,13 +17,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1")
 @RestController
 @Validated
+@RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class CategoryController extends BaseController {
 
     private final CategoryService categoryService;
-    @Autowired
-    public CategoryController ( CategoryService categoryService ) {
-        this.categoryService = categoryService;
-    }
 
     @GetMapping("/public/categories/sorted")
     public ResponseEntity< ApiResponse<CategoryModel> > getAllCategories(

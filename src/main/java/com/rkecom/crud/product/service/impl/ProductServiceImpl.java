@@ -61,7 +61,7 @@ public class ProductServiceImpl implements ProductService {
                 ?Sort.by ( Sort.Direction.ASC, sortBy )
                 :Sort.by ( Sort.Direction.DESC, sortBy );
         Page<Product> productPage = productRepository.findAll ( PageRequest.of ( page, size, sort ) );
-        return buildProductResponse ( productPage );
+        return buildProductApiResponse ( productPage );
     }
 
     @Override
@@ -127,7 +127,7 @@ public class ProductServiceImpl implements ProductService {
         return product.isPresent() && (id==null || !product.get().getId().equals(id));
     }
 
-    private ApiResponse < ProductModel > buildProductResponse ( Page < Product > productPage ) {
+    private ApiResponse < ProductModel > buildProductApiResponse ( Page < Product > productPage ) {
         List <Product> products = productPage.getContent ();
         if(products.isEmpty()) {
             throw new ApiException ( "No products found" );

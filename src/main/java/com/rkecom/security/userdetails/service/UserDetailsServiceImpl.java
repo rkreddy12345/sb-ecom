@@ -33,7 +33,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                         .build ())
                 .authorities ( user.getRoles ()
                         .stream ()
-                        .map ( role->new SimpleGrantedAuthority ( role.getRoleName ().name () ) )
+                        .map ( role->new SimpleGrantedAuthority ( role.getRoleType ().name () ) )
                         .toList () )
                 .build();
     }

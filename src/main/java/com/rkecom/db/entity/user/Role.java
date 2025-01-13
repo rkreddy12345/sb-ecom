@@ -11,8 +11,8 @@ import java.io.Serializable;
 
 @Entity
 @Data
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "ROLE")
+@NoArgsConstructor
 public class Role implements Serializable {
     @Serial
     private static final long serialVersionUID = 1L;
@@ -24,6 +24,10 @@ public class Role implements Serializable {
 
     @Column(name = "ROLE_NAME", unique = true, nullable = false, length = 20)
     @Enumerated(EnumType.STRING)
-    private RoleType roleName;
+    private RoleType roleType;
+
+    public Role(RoleType roleType) {
+        this.roleType = roleType;
+    }
 
 }
