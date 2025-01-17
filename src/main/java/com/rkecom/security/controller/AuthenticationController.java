@@ -5,7 +5,6 @@ import com.rkecom.core.response.util.ErrorConstants;
 import com.rkecom.core.response.util.ErrorResponseUtil;
 import com.rkecom.crud.user.service.RoleService;
 import com.rkecom.crud.user.service.UserService;
-import com.rkecom.data.user.repository.UserRepository;
 import com.rkecom.db.entity.user.Role;
 import com.rkecom.db.entity.user.RoleType;
 import com.rkecom.objects.user.mapper.UserMapper;
@@ -45,7 +44,6 @@ public class AuthenticationController extends BaseController {
     private final UserService userService;
     private final RoleService roleService;
     private final PasswordEncoder passwordEncoder;
-    private final UserRepository userRepository;
     private final UserMapper userMapper;
 
     @PostMapping("/register")
