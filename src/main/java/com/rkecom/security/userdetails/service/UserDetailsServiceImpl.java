@@ -22,6 +22,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         User user=userRepository.findUserByUserName ( username )
                 .orElseThrow ( () -> new UsernameNotFoundException ( "User Not Found" ) );
 
-        return userMapper.toEcomUserDetailsFromUser ().apply ( user );
+        return userMapper.toEcomUserDetailsFromEntity ().apply ( user );
     }
 }

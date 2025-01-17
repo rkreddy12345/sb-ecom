@@ -45,7 +45,7 @@ public class UserMapper {
                 .build ();
     }
 
-    public Function<User, EcomUserDetails > toEcomUserDetailsFromUser() {
+    public Function<User, EcomUserDetails > toEcomUserDetailsFromEntity() {
         return user -> {
             UserModel userModel = UserModel.builder()
                     .userId(user.getUserId())
@@ -68,7 +68,7 @@ public class UserMapper {
         };
     }
 
-    public Function< EcomUserDetails, UserModel> toUserModelFromEcomUserDetails() {
+    public Function< EcomUserDetails, UserModel> toModelFromEcomUserDetails() {
         return userDetails -> UserModel.builder()
                 .userId(userDetails.getUserId())
                 .userName(userDetails.getUsername())

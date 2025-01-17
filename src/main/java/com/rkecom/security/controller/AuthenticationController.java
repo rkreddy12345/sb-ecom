@@ -136,7 +136,7 @@ public class AuthenticationController extends BaseController {
     public ResponseEntity<UserModel> currentUserDetails (Authentication authentication) {
          EcomUserDetails userDetails = (EcomUserDetails) authentication.getPrincipal ();
          return ResponseEntity.ok (
-                 userMapper.toUserModelFromEcomUserDetails ().apply ( userDetails )
+                 userMapper.toModelFromEcomUserDetails ().apply ( userDetails )
          );
     }
 
