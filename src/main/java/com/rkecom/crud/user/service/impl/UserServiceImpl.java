@@ -24,24 +24,23 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
-@Transactional
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
     private static final Logger logger= LoggerFactory.getLogger(UserServiceImpl.class);
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
     @Override
-    @Transactional(readOnly = true)
     public boolean existsByUsername ( String username ) {
        return userRepository.existsByUserName ( username );
     }
 
     @Override
-    @Transactional(readOnly = true)
     public boolean existsByEmail ( String email ) {
         return userRepository.existsByEmail ( email );
     }
 
+    @Transactional
     @Override
     public UserModel save ( UserModel userModel ) {
         if(userRepository.existsByUserName ( userModel.getUserName ())) {

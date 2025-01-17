@@ -9,6 +9,7 @@ import java.util.Map;
 public class ErrorResponseUtil {
 
     private ErrorResponseUtil() {
+        throw new IllegalStateException("Utility class: cannot instantiate.");
     }
     public static ErrorResponse buildErrorResponse(String status, String message, Map<String, String> details, HttpStatus httpStatus) {
         return ErrorResponse.builder()
@@ -38,6 +39,7 @@ public class ErrorResponseUtil {
                 .timestamp(LocalDateTime.now())
                 .error(ErrorResponse.ErrorDetails.builder()
                         .message(message)
+                        .code ( httpStatus.name () )
                         .build())
                 .build();
     }

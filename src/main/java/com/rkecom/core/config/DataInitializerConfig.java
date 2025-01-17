@@ -33,7 +33,7 @@ public class DataInitializerConfig {
                     .userName("user1")
                     .password(passwordEncoder.encode("user1pwd"))
                     .email("user1@email.com")
-                    .roles(new ArrayList<>(List.of(userRole))) // Initialize roles
+                    .roles(new ArrayList<>(List.of(userRole.getRoleType ().name ())))
                     .build();
             userService.save(user1);
 
@@ -41,7 +41,7 @@ public class DataInitializerConfig {
                     .userName("admin1")
                     .password(passwordEncoder.encode("admin1pwd"))
                     .email("admin@email.com")
-                    .roles(new ArrayList <> ( List.of(adminRole))) // Initialize roles
+                    .roles(new ArrayList <> ( List.of(adminRole.getRoleType ().name ())))
                     .build();
             userService.save(admin1);
 
@@ -49,7 +49,7 @@ public class DataInitializerConfig {
                     .userName("seller1")
                     .password(passwordEncoder.encode("seller1pwd"))
                     .email("seller1@email.com")
-                    .roles(new ArrayList<>(List.of(sellerRole))) // Initialize roles
+                    .roles(new ArrayList<>(List.of(sellerRole.getRoleType ().name ())))
                     .build();
             userService.save(seller1);
         };

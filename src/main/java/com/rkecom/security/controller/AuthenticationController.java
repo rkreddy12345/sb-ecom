@@ -1,6 +1,7 @@
 package com.rkecom.security.controller;
 
 import com.rkecom.core.controller.BaseController;
+import com.rkecom.core.response.util.ErrorConstants;
 import com.rkecom.core.response.util.ErrorResponseUtil;
 import com.rkecom.crud.user.service.RoleService;
 import com.rkecom.crud.user.service.UserService;
@@ -27,10 +28,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
@@ -52,16 +50,19 @@ public class AuthenticationController extends BaseController {
     public ResponseEntity<Object> registerUser(@Valid @RequestBody SignupRequest signupRequest) {
         if(userService.existsByUsername ( signupRequest.getUsername() )){
             return ResponseEntity.status(HttpStatus.CONFLICT).body(
-                    ErrorResponseUtil.buildErrorResponse ( "ERROR", "user name is already taken", HttpStatus.CONFLICT )
+                    ErrorResponseUtil.buildErrorResponse ( ErrorConstants.ERROR_STATUS, "user name is already taken", HttpStatus.CONFLICT )
             );
         }
         if(userService.existsByEmail ( signupRequest.getEmail() )){
             return ResponseEntity.status(HttpStatus.CONFLICT).body(
-                    ErrorResponseUtil.buildErrorResponse ( "ERROR", "email is already taken", HttpStatus.CONFLICT )
+                    ErrorResponseUtil.buildErrorResponse ( ErrorConstants.ERROR_STATUS, "email is already taken", HttpStatus.CONFLICT )
             );
         }
-        UserModel userModel=UserModel.builder ().userName ( signupRequest.getUsername())
-                .email ( signupRequest.getEmail() ).password ( passwordEncoder.encode ( signupRequest.getPassword () ) ).build();
+        UserModel userModel=UserModel.builder ()
+                .userName ( signupRequest.getUsername())
+                .email ( signupRequest.getEmail() )
+                .password ( passwordEncoder.encode ( signupRequest.getPassword () ) )
+                .build();
 
         List<String> roleNames=signupRequest.getRoles();
         List<Role> roles=new ArrayList <> ();
@@ -86,8 +87,15 @@ public class AuthenticationController extends BaseController {
                 }
             });
         }
-        userModel.setRoles ( roles );
-        return ResponseEntity.status(HttpStatus.CREATED).body(userService.save ( userModel ));
+        userModel.setRoles ( roles.stream ()
+                .map ( role -> role.getRoleType ().name () )
+                .toList ());
+        UserModel registeredUser = userService.save ( userModel );
+        Map<String, Object> signUpResponse= new LinkedHashMap <>();
+        signUpResponse.put ( "message", "Registration Successful." );
+        signUpResponse.put("details", registeredUser);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(signUpResponse);
     }
 
     @PostMapping ("/login")
@@ -96,11 +104,12 @@ public class AuthenticationController extends BaseController {
         try{
             authentication=authenticationManager.authenticate ( new UsernamePasswordAuthenticationToken (loginRequest.getUsername(), loginRequest.getPassword()) );
         } catch (AuthenticationException e) {
-            final Map <String, Object> errorDetails = new HashMap <> ();
-            errorDetails.put ( "status", HttpStatus.NOT_FOUND.value() );
-            errorDetails.put ( "message", e.getMessage() );
-            errorDetails.put("timestamp", System.currentTimeMillis());
-            return ResponseEntity.status ( HttpStatus.NOT_FOUND ).body ( errorDetails );
+            return ResponseEntity.status ( HttpStatus.UNAUTHORIZED )
+                    .body ( ErrorResponseUtil.buildErrorResponse (
+                            ErrorConstants.ERROR_STATUS,
+                            "Login failed.",
+                            HttpStatus.UNAUTHORIZED
+                    ) );
         }
         SecurityContextHolder.getContext ().setAuthentication ( authentication );
         UserDetailsImpl userDetails= (UserDetailsImpl) authentication.getPrincipal ();
@@ -115,7 +124,24 @@ public class AuthenticationController extends BaseController {
                 .username ( userDetails.getUsername () )
                 .roles ( roles )
                 .build ();
-        return ResponseEntity.ok (response);
+        Map<String, Object> loginResponse= new LinkedHashMap <>();
+        loginResponse.put ( "message", "Login Successful." );
+        loginResponse.put("details", response);
+        return ResponseEntity.ok (loginResponse);
+    }
+
+    @GetMapping("/user")
+    public UserModel currentUserDetails (Authentication authentication) {
+         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal ();
+         return UserModel.builder ()
+                 .userId ( userDetails.getUserId () )
+                 .userName ( userDetails.getUsername () )
+                 .email ( userDetails.getEmail () )
+                 .roles ( userDetails.getAuthorities ()
+                         .stream ()
+                         .map ( authority->authority.getAuthority () )
+                         .toList ())
+                 .build ();
     }
 
 }

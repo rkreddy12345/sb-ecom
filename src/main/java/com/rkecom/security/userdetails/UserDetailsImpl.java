@@ -36,7 +36,7 @@ public class UserDetailsImpl implements UserDetails {
     public Collection < ? extends GrantedAuthority > getAuthorities ( ) {
         return user.getRoles ()
                 .stream ()
-                .map ( role->new SimpleGrantedAuthority ( role.getRoleType ().name () ) )
+                .map ( role->new SimpleGrantedAuthority ( role ) )
                 .toList ();
     }
 
