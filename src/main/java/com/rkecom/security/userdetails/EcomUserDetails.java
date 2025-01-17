@@ -15,7 +15,7 @@ import java.util.Collection;
 @AllArgsConstructor
 @Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class UserDetailsImpl implements UserDetails {
+public class EcomUserDetails implements UserDetails {
 
     @EqualsAndHashCode.Include
     private UserModel user;

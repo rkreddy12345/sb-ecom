@@ -4,9 +4,11 @@ import com.rkecom.crud.user.service.RoleService;
 import com.rkecom.db.entity.user.Role;
 import com.rkecom.db.entity.user.RoleType;
 import com.rkecom.db.entity.user.User;
+import com.rkecom.security.userdetails.EcomUserDetails;
 import com.rkecom.ui.model.user.UserModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -41,5 +43,39 @@ public class UserMapper {
                         .map ( role -> role.getRoleType ().name () )
                         .toList ())
                 .build ();
+    }
+
+    public Function<User, EcomUserDetails > toEcomUserDetailsFromUser() {
+        return user -> {
+            UserModel userModel = UserModel.builder()
+                    .userId(user.getUserId())
+                    .userName(user.getUserName())
+                    .password(user.getPassword())
+                    .roles(user.getRoles().stream()
+                            .map(role -> role.getRoleType().name())
+                            .toList())
+                    .email(user.getEmail())
+                    .build();
+
+            List< SimpleGrantedAuthority > authorities = user.getRoles().stream()
+                    .map(role -> new SimpleGrantedAuthority(role.getRoleType().name()))
+                    .toList();
+
+            return EcomUserDetails.builder()
+                    .user(userModel)
+                    .authorities(authorities)
+                    .build();
+        };
+    }
+
+    public Function< EcomUserDetails, UserModel> toUserModelFromEcomUserDetails() {
+        return userDetails -> UserModel.builder()
+                .userId(userDetails.getUserId())
+                .userName(userDetails.getUsername())
+                .email(userDetails.getEmail())
+                .roles(userDetails.getAuthorities().stream()
+                        .map(authority -> authority.getAuthority())
+                        .toList())
+                .build();
     }
 }

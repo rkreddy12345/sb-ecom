@@ -8,11 +8,12 @@ import com.rkecom.crud.user.service.UserService;
 import com.rkecom.data.user.repository.UserRepository;
 import com.rkecom.db.entity.user.Role;
 import com.rkecom.db.entity.user.RoleType;
+import com.rkecom.objects.user.mapper.UserMapper;
 import com.rkecom.security.jwt.util.JwtUtil;
 import com.rkecom.security.ui.model.LoginRequest;
 import com.rkecom.security.ui.model.SignupRequest;
 import com.rkecom.security.ui.model.UserInfoResponse;
-import com.rkecom.security.userdetails.UserDetailsImpl;
+import com.rkecom.security.userdetails.EcomUserDetails;
 import com.rkecom.ui.model.user.UserModel;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +46,7 @@ public class AuthenticationController extends BaseController {
     private final RoleService roleService;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     @PostMapping("/register")
     public ResponseEntity<Object> registerUser(@Valid @RequestBody SignupRequest signupRequest) {
@@ -112,7 +114,7 @@ public class AuthenticationController extends BaseController {
                     ) );
         }
         SecurityContextHolder.getContext ().setAuthentication ( authentication );
-        UserDetailsImpl userDetails= (UserDetailsImpl) authentication.getPrincipal ();
+        EcomUserDetails userDetails= (EcomUserDetails) authentication.getPrincipal ();
         String jwtToken= jwtUtil.generateJwtToken ( userDetails );
         List <String> roles=userDetails.getAuthorities ()
                 .stream ().map ( GrantedAuthority::getAuthority )
@@ -131,17 +133,11 @@ public class AuthenticationController extends BaseController {
     }
 
     @GetMapping("/user")
-    public UserModel currentUserDetails (Authentication authentication) {
-         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal ();
-         return UserModel.builder ()
-                 .userId ( userDetails.getUserId () )
-                 .userName ( userDetails.getUsername () )
-                 .email ( userDetails.getEmail () )
-                 .roles ( userDetails.getAuthorities ()
-                         .stream ()
-                         .map ( authority->authority.getAuthority () )
-                         .toList ())
-                 .build ();
+    public ResponseEntity<UserModel> currentUserDetails (Authentication authentication) {
+         EcomUserDetails userDetails = (EcomUserDetails) authentication.getPrincipal ();
+         return ResponseEntity.ok (
+                 userMapper.toUserModelFromEcomUserDetails ().apply ( userDetails )
+         );
     }
 
 }
