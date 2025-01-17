@@ -9,4 +9,6 @@ public interface UserService extends BaseService {
     boolean existsByEmail(String email);
     UserModel save(UserModel user);
     ApiResponse <UserModel> getAllUsers(Integer pageNo, Integer pageSize, String sortBy, String sortOrder);
+    ApiResponse <UserModel> getAllNonAdminUsers(Integer pageNo, Integer pageSize, String sortBy, String sortOrder);
+
 }

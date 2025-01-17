@@ -58,9 +58,19 @@ public class UserServiceImpl implements UserService {
         Sort sort=sortOrder.equalsIgnoreCase ( PaginationUtil.SORT_IN_ASC )
                 ?Sort.by ( Sort.Direction.ASC, sortBy )
                 : Sort.by ( Sort.Direction.DESC, sortBy );
+        Page <User> userPage=userRepository.findAll (PageRequest.of (pageNo, pageSize, sort));
+        return buildUserApiResponse(userPage);
+    }
+
+    @Override
+    public ApiResponse < UserModel > getAllNonAdminUsers (Integer pageNo, Integer pageSize, String sortBy, String sortOrder ) {
+        Sort sort=sortOrder.equalsIgnoreCase ( PaginationUtil.SORT_IN_ASC )
+                ?Sort.by ( Sort.Direction.ASC, sortBy )
+                : Sort.by ( Sort.Direction.DESC, sortBy );
         Page <User> userPage=userRepository.findAllExcludingRole ( RoleType.ADMIN , PageRequest.of ( pageNo, pageSize, sort ));
         return buildUserApiResponse(userPage);
     }
+
 
     private ApiResponse < UserModel > buildUserApiResponse ( Page < User > userPage ) {
         List <User> users = userPage.getContent ();

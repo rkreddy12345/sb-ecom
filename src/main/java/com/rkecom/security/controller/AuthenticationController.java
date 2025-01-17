@@ -127,7 +127,7 @@ public class AuthenticationController extends BaseController {
         Map<String, Object> loginResponse= new LinkedHashMap <>();
         loginResponse.put ( "message", "Login Successful." );
         loginResponse.put("details", response);
-        return ResponseEntity.ok (loginResponse);
+        return ResponseEntity.status ( HttpStatus.ACCEPTED ).body ( loginResponse );
     }
 
     @GetMapping("/user")
