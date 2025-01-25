@@ -1,4 +1,4 @@
-package com.rkecom.security.jwt.util;
+package com.rkecom.security.auth.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;

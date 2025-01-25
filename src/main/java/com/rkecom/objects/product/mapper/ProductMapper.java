@@ -20,7 +20,6 @@ public class ProductMapper {
                     .discount ( productModel.getDiscount() )
                     .specialPrice ( productModel.getSpecialPrice() )
                     .quantity ( productModel.getQuantity() )
-                    .category ( productModel.getCategory() )
                     .build();
     }
 
@@ -34,7 +33,7 @@ public class ProductMapper {
                 .discount( product.getDiscount() )
                 .specialPrice( product.getSpecialPrice() )
                 .quantity ( product.getQuantity() )
-                .category ( product.getCategory() )
+                .categoryId ( product.getCategory ().getId () )
                 .build();
     }
 
@@ -47,7 +46,6 @@ public class ProductMapper {
             MapperUtil.updateField ( product.getDiscount (), productModel.getDiscount (), product::setDiscount );
             MapperUtil.updateField ( product.getSpecialPrice (), productModel.getSpecialPrice (), product::setSpecialPrice );
             MapperUtil.updateField ( product.getQuantity (), productModel.getQuantity (), product::setQuantity );
-            MapperUtil.updateField ( product.getCategory (), productModel.getCategory (), product::setCategory );
             return product;
         };
     }

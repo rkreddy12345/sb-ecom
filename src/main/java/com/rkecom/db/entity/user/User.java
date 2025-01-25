@@ -1,5 +1,6 @@
 package com.rkecom.db.entity.user;
 
+import com.rkecom.db.entity.product.Cart;
 import com.rkecom.db.entity.product.Product;
 import jakarta.persistence.*;
 import lombok.*;
@@ -35,8 +36,13 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
     private List <Role> roles = new ArrayList <> ();
 
-    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List< Product > products = new ArrayList <> ();
+
+    @OneToOne(mappedBy = "user",
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
+            orphanRemoval = true)
+    private Cart cart;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "USER_ADDRESS",

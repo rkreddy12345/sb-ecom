@@ -1,8 +1,8 @@
 package com.rkecom.security.config;
 
 import com.rkecom.db.entity.user.RoleType;
-import com.rkecom.security.jwt.filter.JwtAuthenticationFilter;
-import com.rkecom.security.jwt.util.JwtAuthenticationEntryPoint;
+import com.rkecom.security.auth.filter.JwtAuthenticationFilter;
+import com.rkecom.security.auth.util.JwtAuthenticationEntryPoint;
 import com.rkecom.security.userdetails.service.UserDetailsServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

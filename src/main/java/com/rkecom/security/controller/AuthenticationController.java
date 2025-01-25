@@ -7,8 +7,7 @@ import com.rkecom.crud.user.service.RoleService;
 import com.rkecom.crud.user.service.UserService;
 import com.rkecom.db.entity.user.Role;
 import com.rkecom.db.entity.user.RoleType;
-import com.rkecom.objects.user.mapper.UserMapper;
-import com.rkecom.security.jwt.util.JwtUtil;
+import com.rkecom.security.auth.util.JwtUtil;
 import com.rkecom.security.ui.model.LoginRequest;
 import com.rkecom.security.ui.model.SignupRequest;
 import com.rkecom.security.ui.model.UserInfoResponse;
@@ -28,7 +27,10 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
 
@@ -44,7 +46,6 @@ public class AuthenticationController extends BaseController {
     private final UserService userService;
     private final RoleService roleService;
     private final PasswordEncoder passwordEncoder;
-    private final UserMapper userMapper;
 
     @PostMapping("/register")
     public ResponseEntity<Object> registerUser(@Valid @RequestBody SignupRequest signupRequest) {
@@ -128,14 +129,6 @@ public class AuthenticationController extends BaseController {
         loginResponse.put ( "message", "Login Successful." );
         loginResponse.put("details", response);
         return ResponseEntity.status ( HttpStatus.ACCEPTED ).body ( loginResponse );
-    }
-
-    @GetMapping("/user")
-    public ResponseEntity<UserModel> currentUserDetails (Authentication authentication) {
-         EcomUserDetails userDetails = (EcomUserDetails) authentication.getPrincipal ();
-         return ResponseEntity.ok (
-                 userMapper.toModelFromEcomUserDetails ().apply ( userDetails )
-         );
     }
 
 }

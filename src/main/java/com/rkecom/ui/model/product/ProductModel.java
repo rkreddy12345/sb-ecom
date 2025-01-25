@@ -1,7 +1,6 @@
 package com.rkecom.ui.model.product;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.rkecom.db.entity.product.Category;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -27,5 +26,5 @@ public class ProductModel {
     private Double price;
     private Double discount;
     private Double specialPrice;
-    private Category category;
+    private Long categoryId;
 }

@@ -1,6 +1,6 @@
-package com.rkecom.security.jwt.filter;
+package com.rkecom.security.auth.filter;
 
-import com.rkecom.security.jwt.util.JwtUtil;
+import com.rkecom.security.auth.util.JwtUtil;
 import com.rkecom.security.userdetails.service.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

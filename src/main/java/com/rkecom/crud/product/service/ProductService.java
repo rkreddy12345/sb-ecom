@@ -17,4 +17,5 @@ public interface ProductService extends BaseService {
     ProductModel deleteProductById ( Long productId );
 
     ProductModel updateProductImage ( Long productId, MultipartFile image ) throws IOException;
+    ProductModel getProductById(Long productId);
 }

@@ -122,6 +122,14 @@ public class ProductServiceImpl implements ProductService {
         return productMapper.toModel().apply ( productRepository.save ( product ) );
     }
 
+    @Override
+    public ProductModel getProductById ( Long productId ) {
+        Product product=productRepository.findById ( productId ).orElseThrow (
+                ()->new ResourceNotFoundException (ResourceConstants.PRODUCT, "id", productId)
+        );
+        return productMapper.toModel().apply ( product );
+    }
+
     private boolean isProductExistsWithName(String name, Long id){
         Optional <Product> product = productRepository.findByName(name);
         return product.isPresent() && (id==null || !product.get().getId().equals(id));

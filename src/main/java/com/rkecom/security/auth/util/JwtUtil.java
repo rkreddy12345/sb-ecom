@@ -1,4 +1,4 @@
-package com.rkecom.security.jwt.util;
+package com.rkecom.security.auth.util;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
