@@ -2,10 +2,7 @@ package com.rkecom.db.entity.product;
 
 import com.rkecom.db.entity.user.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +16,9 @@ import java.util.List;
 public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY )
-    private Long id;
+    @Column(name = "cart_id")
+    @Setter (AccessLevel.NONE)
+    private Long cartId;
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;

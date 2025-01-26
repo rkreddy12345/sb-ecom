@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @JsonInclude( value = JsonInclude.Include.NON_NULL )
 public class ProductModel {
-    private Long id;
+    private Long productId;
     @NotBlank (message = "Product name is required")
     @Size (min = 3, max = 10, message = "product name should be between 3 and 10 characters")
     private String name;

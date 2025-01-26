@@ -132,7 +132,7 @@ public class ProductServiceImpl implements ProductService {
 
     private boolean isProductExistsWithName(String name, Long id){
         Optional <Product> product = productRepository.findByName(name);
-        return product.isPresent() && (id==null || !product.get().getId().equals(id));
+        return product.isPresent() && (id==null || !product.get().getProductId ().equals(id));
     }
 
     private ApiResponse < ProductModel > buildProductApiResponse ( Page < Product > productPage ) {

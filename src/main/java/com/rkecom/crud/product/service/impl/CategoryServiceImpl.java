@@ -91,7 +91,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     private boolean isCategoryExistsWithName(String name, Long id){
         Optional<Category> category = categoryRepository.findByName(name);
-        return category.isPresent() && (id==null || !category.get ().getId ().equals ( id ));
+        return category.isPresent() && (id==null || !category.get ().getCategoryId ().equals ( id ));
     }
 
 }

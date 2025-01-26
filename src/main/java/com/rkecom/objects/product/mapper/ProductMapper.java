@@ -25,7 +25,7 @@ public class ProductMapper {
 
     public final Function<Product, ProductModel> toModel(){
         return product -> ProductModel.builder ()
-                .id ( product.getId() )
+                .productId ( product.getProductId () )
                 .name( product.getName() )
                 .description( product.getDescription() )
                 .image( product.getImage() )
@@ -33,7 +33,7 @@ public class ProductMapper {
                 .discount( product.getDiscount() )
                 .specialPrice( product.getSpecialPrice() )
                 .quantity ( product.getQuantity() )
-                .categoryId ( product.getCategory ().getId () )
+                .categoryId ( product.getCategory ().getCategoryId () )
                 .build();
     }
 

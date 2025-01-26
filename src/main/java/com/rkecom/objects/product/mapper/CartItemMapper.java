@@ -10,12 +10,12 @@ import java.util.function.Function;
 public class CartItemMapper {
     public final Function < CartItem, CartItemModel > toCartItemModel(){
         return cartItem -> CartItemModel.builder ()
-                .id ( cartItem.getId () )
-                .cartId ( cartItem.getId () )
-                .productId ( cartItem.getProduct ().getId () )
-                .quantity ( cartItem.getQuantity () )
+                .cartItemId ( cartItem.getCartItemId () )
+                .productId ( cartItem.getProduct ().getProductId () )
                 .discount ( cartItem.getDiscount () )
                 .price ( cartItem.getPrice () )
+                .quantity ( cartItem.getQuantity () )
+                .cartId ( cartItem.getCart ().getCartId () )
                 .build ();
     }
 }

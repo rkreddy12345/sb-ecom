@@ -19,7 +19,7 @@ public class CategoryMapper {
     //entity to model
     public final Function<Category, CategoryModel> toModel(){
         return category -> CategoryModel.builder ()
-                .id( category.getId () )
+                .categoryId ( category.getCategoryId () )
                 .name ( category.getName () )
                 .build ();
     }

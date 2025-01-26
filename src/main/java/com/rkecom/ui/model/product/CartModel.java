@@ -13,7 +13,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CartModel {
-    private Long id;
+    private Long cartId;
     private List <CartItemModel> cartItems = new ArrayList <> ();
+    private String userEmail;
     private Double totalPrice;
 }

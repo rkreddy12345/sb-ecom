@@ -5,4 +5,5 @@ import com.rkecom.ui.model.product.CartModel;
 
 public interface CartService extends BaseService {
     CartModel addProductToCart(Long productId, Integer quantity);
+    CartModel getUserCart(String email);
 }

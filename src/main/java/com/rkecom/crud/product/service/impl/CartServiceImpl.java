@@ -41,7 +41,7 @@ public class CartServiceImpl implements CartService {
         Product product=productRepository.findById ( productId ).orElseThrow (
                 ()->new ResourceNotFoundException ( ResourceConstants.PRODUCT, "id", productId)
         );
-        Optional<CartItem> cartItem=cartItemRepository.findByProductIdAndCartId ( productId, cart.getId () );
+        Optional<CartItem> cartItem=cartItemRepository.findByProductIdAndCartId ( productId, cart.getCartId () );
         if (cartItem.isPresent()) {
             throw new ApiException("The product is already in the cart. Please update the quantity instead.");
         }
@@ -65,6 +65,15 @@ public class CartServiceImpl implements CartService {
         cart.getCartItems ().add ( newCartItem );
         Cart savedCart=cartRepository.save( cart );
         return cartMapper.toModel ().apply ( savedCart );
+    }
+
+    @Override
+    public CartModel getUserCart ( String email ) {
+        Cart cart =  cartRepository.findCartByEmail ( email ).orElseThrow (
+                ( ) -> new ResourceNotFoundException ( ResourceConstants.CART, "email", email )
+        );
+
+        return cartMapper.toModel ().apply ( cart );
     }
 
     private Cart getTheCart() {

@@ -1,10 +1,7 @@
 package com.rkecom.db.entity.product;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name="cart_item")
@@ -15,7 +12,9 @@ import lombok.NoArgsConstructor;
 public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Setter (AccessLevel.NONE)
+    @Column(name = "cart_item_id")
+    private Long cartItemId;
     @ManyToOne
     @JoinColumn(name = "cart_id")
     private Cart cart;

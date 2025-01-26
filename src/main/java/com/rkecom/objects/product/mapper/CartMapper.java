@@ -15,9 +15,10 @@ public class CartMapper {
     private final CartItemMapper cartItemMapper;
     public final Function < Cart, CartModel > toModel() {
         return cart -> CartModel.builder ()
-                .id ( cart.getId () )
+                .cartId ( cart.getCartId () )
                 .cartItems (toCartItemModelsList().apply ( cart ))
                 .totalPrice ( cart.getTotalPrice () )
+                .userEmail ( cart.getUser ().getEmail () )
                 .build ();
     }
 
