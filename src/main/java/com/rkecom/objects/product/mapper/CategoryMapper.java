@@ -2,7 +2,7 @@ package com.rkecom.objects.product.mapper;
 
 import com.rkecom.core.util.MapperUtil;
 import com.rkecom.db.entity.product.Category;
-import com.rkecom.ui.model.product.CategoryModel;
+import com.rkecom.web.product.model.CategoryModel;
 import org.springframework.stereotype.Component;
 
 import java.util.function.BiFunction;

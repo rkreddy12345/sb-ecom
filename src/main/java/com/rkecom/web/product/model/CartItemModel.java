@@ -1,4 +1,4 @@
-package com.rkecom.ui.model.product;
+package com.rkecom.web.product.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

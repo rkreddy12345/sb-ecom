@@ -1,7 +1,7 @@
 package com.rkecom.objects.product.mapper;
 
 import com.rkecom.db.entity.product.CartItem;
-import com.rkecom.ui.model.product.CartItemModel;
+import com.rkecom.web.product.model.CartItemModel;
 import org.springframework.stereotype.Component;
 
 import java.util.function.Function;

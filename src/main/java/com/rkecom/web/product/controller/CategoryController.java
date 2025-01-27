@@ -4,7 +4,8 @@ import com.rkecom.core.controller.BaseController;
 import com.rkecom.core.response.ApiResponse;
 import com.rkecom.core.util.PaginationUtil;
 import com.rkecom.crud.product.service.CategoryService;
-import com.rkecom.ui.model.product.CategoryModel;
+import com.rkecom.web.product.model.CategoryModel;
+import com.rkecom.web.product.constants.CategoryConstants;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ public class CategoryController extends BaseController {
     public ResponseEntity< ApiResponse<CategoryModel> > getAllCategories(
             @RequestParam(defaultValue = PaginationUtil.DEFAULT_PAGE_NUMBER) Integer page,
             @RequestParam(defaultValue = PaginationUtil.DEFAULT_PAGE_SIZE) Integer size,
-            @RequestParam(defaultValue = PaginationUtil.SORT_BY_ID) String sortBy,
+            @RequestParam(defaultValue = CategoryConstants.SORT_BY_ID ) String sortBy,
             @RequestParam(defaultValue = PaginationUtil.SORT_IN_ASC) String sortOrder) {
         return ResponseEntity.ok (categoryService.getAllCategories (page, size, sortBy, sortOrder));
     }

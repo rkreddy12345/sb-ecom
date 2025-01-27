@@ -1,4 +1,4 @@
-package com.rkecom.json.util.annotation;
+package com.rkecom.core.json.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

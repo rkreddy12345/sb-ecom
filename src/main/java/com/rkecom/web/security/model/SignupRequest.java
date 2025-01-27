@@ -1,4 +1,4 @@
-package com.rkecom.security.ui.model;
+package com.rkecom.web.security.model;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

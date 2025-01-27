@@ -1,7 +1,7 @@
 package com.rkecom.crud.product.service;
 
 import com.rkecom.crud.core.service.BaseService;
-import com.rkecom.ui.model.product.CategoryModel;
+import com.rkecom.web.product.model.CategoryModel;
 import com.rkecom.core.response.ApiResponse;
 
 public interface CategoryService extends BaseService {

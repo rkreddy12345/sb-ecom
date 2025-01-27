@@ -1,4 +1,4 @@
-package com.rkecom.ui.model.product;
+package com.rkecom.web.product.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.validation.constraints.NotBlank;

@@ -4,7 +4,7 @@ import com.rkecom.crud.user.service.RoleService;
 import com.rkecom.crud.user.service.UserService;
 import com.rkecom.db.entity.user.Role;
 import com.rkecom.db.entity.user.RoleType;
-import com.rkecom.ui.model.user.UserModel;
+import com.rkecom.web.user.model.UserModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;

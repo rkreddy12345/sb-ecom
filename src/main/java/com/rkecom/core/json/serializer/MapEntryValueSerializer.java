@@ -1,11 +1,11 @@
-package com.rkecom.json.util.serializer;
+package com.rkecom.core.json.serializer;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.BeanProperty;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.ContextualSerializer;
-import com.rkecom.json.util.annotation.JsonConditionalInclude;
+import com.rkecom.core.json.annotation.JsonConditionalInclude;
 
 import java.io.IOException;
 import java.util.Collection;

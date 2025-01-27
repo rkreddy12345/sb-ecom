@@ -1,8 +1,8 @@
 package com.rkecom.objects.product.mapper;
 
 import com.rkecom.db.entity.product.Cart;
-import com.rkecom.ui.model.product.CartItemModel;
-import com.rkecom.ui.model.product.CartModel;
+import com.rkecom.web.product.model.CartItemModel;
+import com.rkecom.web.product.model.CartModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

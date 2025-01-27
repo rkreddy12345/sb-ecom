@@ -1,4 +1,4 @@
-package com.rkecom.ui.model.user;
+package com.rkecom.web.user.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.Email;

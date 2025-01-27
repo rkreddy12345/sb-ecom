@@ -1,4 +1,4 @@
-package com.rkecom.security.ui.model;
+package com.rkecom.web.security.model;
 
 import lombok.Builder;
 import lombok.Data;

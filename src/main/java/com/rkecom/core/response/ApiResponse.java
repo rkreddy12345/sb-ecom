@@ -2,8 +2,8 @@ package com.rkecom.core.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.rkecom.json.util.annotation.JsonConditionalInclude;
-import com.rkecom.json.util.serializer.MapEntryValueSerializer;
+import com.rkecom.core.json.annotation.JsonConditionalInclude;
+import com.rkecom.core.json.serializer.MapEntryValueSerializer;
 import lombok.Builder;
 import lombok.Getter;
 

@@ -2,7 +2,7 @@ package com.rkecom.crud.user.service;
 
 import com.rkecom.core.response.ApiResponse;
 import com.rkecom.crud.core.service.BaseService;
-import com.rkecom.ui.model.user.UserModel;
+import com.rkecom.web.user.model.UserModel;
 
 public interface UserService extends BaseService {
     boolean existsByUsername(String username);

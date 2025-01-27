@@ -2,7 +2,7 @@ package com.rkecom.security.auth.util;
 
 import com.rkecom.objects.user.mapper.UserMapper;
 import com.rkecom.security.userdetails.EcomUserDetails;
-import com.rkecom.ui.model.user.UserModel;
+import com.rkecom.web.user.model.UserModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;

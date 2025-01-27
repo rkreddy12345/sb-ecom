@@ -10,7 +10,7 @@ import com.rkecom.crud.product.service.CategoryService;
 import com.rkecom.data.product.repository.CategoryRepository;
 import com.rkecom.db.entity.product.Category;
 import com.rkecom.objects.product.mapper.CategoryMapper;
-import com.rkecom.ui.model.product.CategoryModel;
+import com.rkecom.web.product.model.CategoryModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

@@ -9,7 +9,7 @@ import com.rkecom.data.user.repository.UserRepository;
 import com.rkecom.db.entity.user.RoleType;
 import com.rkecom.db.entity.user.User;
 import com.rkecom.objects.user.mapper.UserMapper;
-import com.rkecom.ui.model.user.UserModel;
+import com.rkecom.web.user.model.UserModel;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

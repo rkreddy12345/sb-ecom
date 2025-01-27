@@ -1,6 +1,6 @@
 package com.rkecom.security.userdetails;
 
-import com.rkecom.ui.model.user.UserModel;
+import com.rkecom.web.user.model.UserModel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;

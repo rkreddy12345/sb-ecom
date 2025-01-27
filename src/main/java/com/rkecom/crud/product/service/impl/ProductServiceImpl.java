@@ -13,7 +13,7 @@ import com.rkecom.data.product.repository.ProductRepository;
 import com.rkecom.db.entity.product.Category;
 import com.rkecom.db.entity.product.Product;
 import com.rkecom.objects.product.mapper.ProductMapper;
-import com.rkecom.ui.model.product.ProductModel;
+import com.rkecom.web.product.model.ProductModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
