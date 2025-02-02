@@ -4,6 +4,7 @@ import com.rkecom.db.entity.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,10 +26,11 @@ public class Product {
     private String description;
     private String image;
     private Integer quantity;
-    private Double price;
-    private Double discount;
-    @Column(name = "special_price")
-    private Double specialPrice;
+    @Column(precision = 15, scale = 2)
+    private BigDecimal price;
+    private BigDecimal discount;
+    @Column(name = "special_price", precision = 15, scale = 2)
+    private BigDecimal specialPrice;
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)

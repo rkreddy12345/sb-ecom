@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,7 +52,12 @@ public class ProductServiceImpl implements ProductService {
         }
         Product product=productMapper.toEntity().apply ( productModel );
         product.setCategory(category);
-        product.setSpecialPrice ( productModel.getPrice ()*(productModel.getDiscount ()*0.01) );
+        product.setSpecialPrice(
+                productModel.getPrice().multiply(
+                        productModel.getDiscount().multiply( BigDecimal.valueOf(0.01))
+                )
+        );
+
         return productMapper.toModel().apply ( productRepository.save ( product ) );
     }
 

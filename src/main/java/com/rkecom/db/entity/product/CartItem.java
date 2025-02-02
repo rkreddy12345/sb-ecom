@@ -3,12 +3,13 @@ package com.rkecom.db.entity.product;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @Entity
 @Table(name="cart_item")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@Builder
 public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +23,8 @@ public class CartItem {
     @JoinColumn(name="product_id")
     private Product product;
     private Integer quantity;
-    private Double discount;
-    @Column(name = "product_price")
-    private Double price;
+    @Column(precision = 15, scale = 2)
+    private BigDecimal discount;
+    @Column(name = "product_price", precision = 15, scale = 2)
+    private BigDecimal price;
 }

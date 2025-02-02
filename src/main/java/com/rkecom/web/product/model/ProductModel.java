@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Builder
 @Data
 @AllArgsConstructor
@@ -23,8 +25,8 @@ public class ProductModel {
     @Size (min = 5, max = 20, message = "product description should be between 3 and 20 characters")
     private String description;
     private Integer quantity;
-    private Double price;
-    private Double discount;
-    private Double specialPrice;
+    private BigDecimal price;
+    private BigDecimal discount;
+    private BigDecimal specialPrice;
     private Long categoryId;
 }

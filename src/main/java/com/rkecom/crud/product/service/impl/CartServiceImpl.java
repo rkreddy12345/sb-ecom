@@ -21,12 +21,13 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
-@RequiredArgsConstructor(onConstructor_ = {@Autowired})
-@Transactional(readOnly = true)
+@RequiredArgsConstructor (onConstructor_ = {@Autowired})
+@Transactional (readOnly = true)
 public class CartServiceImpl implements CartService {
     private final CartRepository cartRepository;
     private final UserDetailsUtil userDetailsUtil;
@@ -34,64 +35,94 @@ public class CartServiceImpl implements CartService {
     private final CartItemRepository cartItemRepository;
     private final CartMapper cartMapper;
     private final ProductRepository productRepository;
-    @Override
+
     @Transactional
-    public CartModel addProductToCart ( Long productId, Integer quantity ) {
-        Cart cart=getTheCart ();
-        Product product=productRepository.findById ( productId ).orElseThrow (
-                ()->new ResourceNotFoundException ( ResourceConstants.PRODUCT, "id", productId)
-        );
-        Optional<CartItem> cartItem=cartItemRepository.findByProductIdAndCartId ( productId, cart.getCartId () );
-        if (cartItem.isPresent()) {
-            throw new ApiException("The product is already in the cart. Please update the quantity instead.");
+    public CartModel addProductToCart( Long productId) {
+        Cart cart = getTheCart();
+        if (cartItemRepository.findByProductIdAndCartId(productId, cart.getCartId()).isPresent()) {
+            throw new ApiException ("This item already exists in the cart. update the quantity instead.");
         }
-        if (product.getQuantity() < quantity) {
-            throw new ApiException("Insufficient stock available to add the requested quantity.");
+        Product product = getProductById(productId);
+        if (product.getQuantity() < 1) {
+            throw new ApiException("The requested item is out of stock.");
         }
-        if (product.getQuantity() == 0) {
-            throw new ApiException("The product is out of stock.");
+        CartItem cartItem= buildCartItem(cart, product, 1);
+        cartItemRepository.save(cartItem);  // Explicitly save the CartItem to make it managed
+        cart.addItem ( cartItem );
+        Cart savedCart= cartRepository.save(cart);
+        return cartMapper.toModel().apply ( savedCart );
+    }
+
+    @Transactional
+    public CartModel updateProductQtyInCart(Long productId, Integer quantity) {
+        Cart cart = getTheCart();
+        Optional < CartItem > existingCartItemOpt = cartItemRepository.findByProductIdAndCartId(productId, cart.getCartId());
+        Product product = getProductById(productId);
+        if (existingCartItemOpt.isPresent()) {
+            CartItem item = existingCartItemOpt.get();
+            int newQuantity = item.getQuantity() + quantity;
+
+            // Ensure quantity is valid
+            if (newQuantity < 0) throw new ApiException("Quantity cannot be negative.");
+            if (newQuantity == 0) cart.getCartItems().remove(item); // Remove item if quantity is 0
+            else {
+                // Update quantity, price, and discount
+                item.setQuantity(newQuantity);
+                item.setPrice(product.getPrice ());
+                item.setDiscount(product.getDiscount());
+                cart.addItem ( item );
+            }
+        } else {
+            // Validate stock for new item
+            if (product.getQuantity() < quantity) throw new ApiException("Insufficient stock.");
+            CartItem cartItem = buildCartItem(cart, product, quantity);
+            cart.addItem ( cartItem );
+            cartItemRepository.save(cartItem);
         }
 
-        CartItem newCartItem=CartItem.builder ()
-                .cart ( cart )
-                .product ( product )
-                .quantity ( quantity )
-                .price ( product.getSpecialPrice () )
-                .discount ( product.getDiscount () )
-                .build ();
-        cartItemRepository.save( newCartItem );
-        product.setQuantity ( product.getQuantity () - quantity );
-        cart.setTotalPrice ( cart.getTotalPrice ()+( product.getSpecialPrice () * quantity ) );
-        cart.getCartItems ().add ( newCartItem );
-        Cart savedCart=cartRepository.save( cart );
-        return cartMapper.toModel ().apply ( savedCart );
+        // Save and return updated cart
+        return cartMapper.toModel().apply(cartRepository.save(cart));
     }
 
     @Override
-    public CartModel getUserCart ( String email ) {
-        Cart cart =  cartRepository.findCartByEmail ( email ).orElseThrow (
-                ( ) -> new ResourceNotFoundException ( ResourceConstants.CART, "email", email )
-        );
-
-        return cartMapper.toModel ().apply ( cart );
+    public CartModel getUserCart(String email) {
+        // Fetch user's cart by email
+        Cart cart = cartRepository.findCartByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException ( ResourceConstants.CART, "email", email));
+        return cartMapper.toModel().apply(cart);
     }
 
     private Cart getTheCart() {
-        UserModel currentUser = userDetailsUtil.getCurrentUser()
-                .orElseThrow(() -> new AccessDeniedException("Access denied: User is not authenticated"));
-
-        return cartRepository.findCartByEmail(currentUser.getEmail())
-                .orElseGet ( ()->createNewCart () );
+        // Get cart or create a new one if not exists
+        return cartRepository.findCartByEmail(getCurrentUser().getEmail()).orElseGet(this::createNewCart);
     }
 
     private Cart createNewCart() {
-        Cart cart = Cart.builder ()
-                .user ( userMapper.toEntity ().apply ( userDetailsUtil.getCurrentUser ()
-                        .orElseThrow (() -> new AccessDeniedException("Access denied: User is not authenticated"))) )
-                .cartItems ( new ArrayList <> () )
-                .totalPrice ( 0.0 )
-                .build ();
-        return cartRepository.save( cart );
+        Cart cart = new Cart ();
+        cart.setUser ( userMapper.toEntity().apply(getCurrentUser()) );
+        cart.setCartItems ( new ArrayList <> () );
+        cart.setTotalPrice ( BigDecimal.ZERO );
+        return  cart;
     }
 
+    private Product getProductById(Long productId) {
+        return productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException(ResourceConstants.PRODUCT, "id", productId));
+    }
+
+    private CartItem buildCartItem(Cart cart, Product product, int quantity) {
+        CartItem cartItem = new CartItem();
+        cartItem.setCart(cart);
+        cartItem.setProduct(product);
+        cartItem.setQuantity(quantity);
+        cartItem.setPrice(product.getSpecialPrice());
+        cartItem.setDiscount(product.getDiscount());
+        return cartItem;
+    }
+
+    private UserModel getCurrentUser() {
+        // Fetch current authenticated user
+        return userDetailsUtil.getCurrentUser()
+                .orElseThrow(() -> new AccessDeniedException ("Access denied: User is not authenticated"));
+    }
 }

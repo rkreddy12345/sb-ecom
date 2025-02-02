@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,5 +17,5 @@ public class CartModel {
     private Long cartId;
     private List <CartItemModel> cartItems = new ArrayList <> ();
     private String userEmail;
-    private Double totalPrice;
+    private BigDecimal totalPrice;
 }

@@ -5,6 +5,7 @@ import com.rkecom.crud.product.service.CartService;
 import com.rkecom.security.auth.util.UserDetailsUtil;
 import com.rkecom.web.product.model.CartModel;
 import com.rkecom.web.user.model.UserModel;
+import com.rkecom.web.product.constants.CartConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,10 +20,10 @@ public class CartController extends BaseController {
     private final CartService cartService;
     private final UserDetailsUtil userDetailsUtil;
 
-    @PostMapping("/carts/products/{productId}/quantity/{quantity}")
-    public ResponseEntity< CartModel > addProductToCart( @PathVariable Long productId, @PathVariable Integer quantity ) {
+    @PostMapping("/carts/products/{productId}")
+    public ResponseEntity< CartModel > addProductToCart( @PathVariable Long productId) {
        return new ResponseEntity<> (
-               cartService.addProductToCart( productId, quantity ) , HttpStatus.CREATED
+               cartService.addProductToCart ( productId ) , HttpStatus.CREATED
        );
     }
 
@@ -31,5 +32,15 @@ public class CartController extends BaseController {
         UserModel currentUser = userDetailsUtil.getCurrentUser()
                 .orElseThrow(() -> new AccessDeniedException ("Access denied: User is not authenticated"));
         return new ResponseEntity <> ( cartService.getUserCart ( currentUser.getEmail () ) , HttpStatus.FOUND );
+    }
+
+    @PutMapping("/carts/products/{productId}/update-quantity/{operation}")
+    public ResponseEntity< CartModel > updateProductQuantityInCart( @PathVariable Long productId, @PathVariable String operation ) {
+        if(!CartConstants.OPERATION_INCREMENT.equalsIgnoreCase ( operation ) &&
+                !CartConstants.OPERATION_DECREMENT.equalsIgnoreCase ( operation )){
+            return ResponseEntity.badRequest ().build ();
+        }
+        int quantityChange=CartConstants.OPERATION_INCREMENT.equalsIgnoreCase ( operation ) ? 1 : -1;
+        return new ResponseEntity <> ( cartService.updateProductQtyInCart ( productId, quantityChange ) , HttpStatus.OK );
     }
 }
