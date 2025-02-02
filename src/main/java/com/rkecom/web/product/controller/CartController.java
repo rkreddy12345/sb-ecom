@@ -3,9 +3,9 @@ package com.rkecom.web.product.controller;
 import com.rkecom.core.controller.BaseController;
 import com.rkecom.crud.product.service.CartService;
 import com.rkecom.security.auth.util.UserDetailsUtil;
+import com.rkecom.web.product.constants.CartConstants;
 import com.rkecom.web.product.model.CartModel;
 import com.rkecom.web.user.model.UserModel;
-import com.rkecom.web.product.constants.CartConstants;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -42,5 +42,10 @@ public class CartController extends BaseController {
         }
         int quantityChange=CartConstants.OPERATION_INCREMENT.equalsIgnoreCase ( operation ) ? 1 : -1;
         return new ResponseEntity <> ( cartService.updateProductQtyInCart ( productId, quantityChange ) , HttpStatus.OK );
+    }
+
+    @DeleteMapping("/carts/product/{productId}")
+    public ResponseEntity< String > deleteProductFromCart( @PathVariable Long productId ) {
+        return new ResponseEntity<> ( cartService.deleteProductFromCart ( productId ) , HttpStatus.OK );
     }
 }

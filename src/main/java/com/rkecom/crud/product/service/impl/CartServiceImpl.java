@@ -92,6 +92,18 @@ public class CartServiceImpl implements CartService {
         return cartMapper.toModel().apply(cart);
     }
 
+    @Override
+    @Transactional
+    public String deleteProductFromCart ( Long productId ) {
+        String email=getCurrentUser ().getEmail ();
+        Cart cart = cartRepository.findCartByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException ( ResourceConstants.CART, "email", email));
+        CartItem cartItem=cartItemRepository.findByProductIdAndCartId(productId, cart.getCartId())
+                .orElseThrow (()->new ResourceNotFoundException ( ResourceConstants.PRODUCT, "product", productId ));
+        cart.removeItem ( cartItem );
+        return "item removed from cart";
+    }
+
     private Cart getTheCart() {
         // Get cart or create a new one if not exists
         return cartRepository.findCartByEmail(getCurrentUser().getEmail()).orElseGet(this::createNewCart);
