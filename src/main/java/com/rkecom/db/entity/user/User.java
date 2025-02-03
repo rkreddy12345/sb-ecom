@@ -17,6 +17,7 @@ import java.util.List;
         @UniqueConstraint ( columnNames = "USER_NAME"),
         @UniqueConstraint ( columnNames = "EMAIL")
 })
+@ToString
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -37,11 +38,13 @@ public class User {
     private List <Role> roles = new ArrayList <> ();
 
     @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @ToString.Exclude
     private List< Product > products = new ArrayList <> ();
 
     @OneToOne(mappedBy = "user",
             cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
             orphanRemoval = true)
+    @ToString.Exclude
     private Cart cart;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})

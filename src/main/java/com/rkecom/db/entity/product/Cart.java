@@ -13,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+@ToString
 public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY )
@@ -30,11 +31,13 @@ public class Cart {
 
     public void addItem(CartItem item) {
         cartItems.add(item);
+        item.setCart(this);// Synchronize the bidirectional relationship
         updateTotalPrice();
     }
 
     public void removeItem(CartItem item) {
         cartItems.remove(item);
+        item.setCart ( null );// Clear the Cart reference in the CartItem
         updateTotalPrice();
     }
 

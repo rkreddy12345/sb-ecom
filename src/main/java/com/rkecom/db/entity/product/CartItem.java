@@ -18,6 +18,7 @@ public class CartItem {
     private Long cartItemId;
     @ManyToOne
     @JoinColumn(name = "cart_id")
+    @ToString.Exclude
     private Cart cart;
     @ManyToOne
     @JoinColumn(name="product_id")

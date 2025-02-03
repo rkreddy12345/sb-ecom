@@ -10,6 +10,6 @@ import java.util.Optional;
 
 @Repository
 public interface CartItemRepository extends BaseRepository< CartItem,Long > {
-    @Query("select ci from CartItem ci where ci.product.id=:productId and ci.cart.id=:cartId")
+    @Query("select ci from CartItem ci where ci.product.productId=:productId and ci.cart.cartId=:cartId")
     Optional <CartItem> findByProductIdAndCartId( @Param ( "productId" ) Long productId, @Param ( "cartId" ) Long cartId );
 }

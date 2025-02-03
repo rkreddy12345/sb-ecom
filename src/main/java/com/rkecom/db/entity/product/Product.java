@@ -14,6 +14,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@ToString
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,5 +42,6 @@ public class Product {
     private User user;
 
     @OneToMany(mappedBy = "product")
+    @ToString.Exclude
     private List <CartItem> cartItems=new ArrayList <> ();
 }

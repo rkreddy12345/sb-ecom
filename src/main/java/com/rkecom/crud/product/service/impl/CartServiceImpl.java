@@ -64,7 +64,7 @@ public class CartServiceImpl implements CartService {
 
             // Ensure quantity is valid
             if (newQuantity < 0) throw new ApiException("Quantity cannot be negative.");
-            if (newQuantity == 0) cart.getCartItems().remove(item); // Remove item if quantity is 0
+            if (newQuantity == 0) cart.removeItem ( item ); // Remove item if quantity is 0
             else {
                 // Update quantity, price, and discount
                 item.setQuantity(newQuantity);
@@ -75,6 +75,7 @@ public class CartServiceImpl implements CartService {
         } else {
             // Validate stock for new item
             if (product.getQuantity() < quantity) throw new ApiException("Insufficient stock.");
+            if (quantity < 0) throw new ApiException("Quantity cannot be negative.");
             CartItem cartItem = buildCartItem(cart, product, quantity);
             cart.addItem ( cartItem );
             cartItemRepository.save(cartItem);
