@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ public class DataInitializerConfig {
     private final PasswordEncoder passwordEncoder;
 
     @Bean
+    @Profile ( "dev" )
     public ApplicationRunner innitUserAndRoles() {
         return args -> {
             Role userRole = roleService.save(new Role(RoleType.USER));

@@ -7,7 +7,7 @@ public interface CartService extends BaseService {
     CartModel addProductToCart(Long productId);
     CartModel updateProductQtyInCart(Long productId, Integer quantity);
     CartModel getUserCart(String email);
-    String deleteProductFromCart(Long productId);
+    CartModel deleteProductFromCart(Long productId);
     void deleteProductFromCart(Long productId, Long cartId);
     void updateProductInCarts(Long cartId, Long productId);
 }

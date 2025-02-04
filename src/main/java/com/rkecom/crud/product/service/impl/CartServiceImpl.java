@@ -97,14 +97,14 @@ public class CartServiceImpl implements CartService {
 
     @Override
     @Transactional
-    public String deleteProductFromCart ( Long productId ) {
+    public CartModel deleteProductFromCart ( Long productId ) {
         String email=getCurrentUser ().getEmail ();
         Cart cart = cartRepository.findCartByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException ( ResourceConstants.CART, "email", email));
         CartItem cartItem=cartItemRepository.findByProductIdAndCartId(productId, cart.getCartId())
                 .orElseThrow (()->new ResourceNotFoundException ( ResourceConstants.CART_ITEM, "productId", productId ));
         cart.removeItem ( cartItem );
-        return "item removed from cart";
+        return cartMapper.toModel().apply(cart);
     }
 
     @Override
