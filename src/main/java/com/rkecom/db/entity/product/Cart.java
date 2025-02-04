@@ -43,10 +43,10 @@ public class Cart {
 
     public void updateTotalPrice() {
         this.totalPrice = cartItems.stream()
-                .map(item -> item.getPrice()
-                        .subtract(item.getDiscount())
-                        .multiply(BigDecimal.valueOf(item.getQuantity())))
+                .map(item -> item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
+
+
 
 }

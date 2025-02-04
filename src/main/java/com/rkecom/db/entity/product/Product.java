@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +36,7 @@ public class Product {
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
+    @ToString.Exclude
     private Category category;
 
     @ManyToOne
@@ -44,4 +46,14 @@ public class Product {
     @OneToMany(mappedBy = "product")
     @ToString.Exclude
     private List <CartItem> cartItems=new ArrayList <> ();
+
+    public void updateSpecialPrice() {
+        if (this.price != null && this.discount != null) {
+            BigDecimal discountAmount = this.price
+                    .multiply(this.discount)
+                    .divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP );
+            this.specialPrice = this.price.subtract(discountAmount);
+        }
+    }
+
 }

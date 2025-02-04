@@ -11,17 +11,24 @@ import java.util.function.Function;
 @Component
 public class ProductMapper {
 
-    public final Function< ProductModel, Product > toEntity(){
-       return productModel -> Product.builder()
+    public final Function<ProductModel, Product> toEntity() {
+        return productModel -> {
+            Product product = Product.builder()
                     .name(productModel.getName())
-                    .description ( productModel.getDescription() )
+                    .description(productModel.getDescription())
                     .image(productModel.getImage())
                     .price(productModel.getPrice())
-                    .discount ( productModel.getDiscount() )
-                    .specialPrice ( productModel.getSpecialPrice() )
-                    .quantity ( productModel.getQuantity() )
+                    .discount(productModel.getDiscount())
+                    .quantity(productModel.getQuantity())
                     .build();
+
+            // Ensure special price is set based on price and discount
+            product.updateSpecialPrice();
+
+            return product;
+        };
     }
+
 
     public final Function<Product, ProductModel> toModel(){
         return product -> ProductModel.builder ()
@@ -44,8 +51,8 @@ public class ProductMapper {
             MapperUtil.updateField ( product.getImage (), productModel.getImage (), product::setImage );
             MapperUtil.updateField ( product.getPrice (), productModel.getPrice (), product::setPrice );
             MapperUtil.updateField ( product.getDiscount (), productModel.getDiscount (), product::setDiscount );
-            MapperUtil.updateField ( product.getSpecialPrice (), productModel.getSpecialPrice (), product::setSpecialPrice );
             MapperUtil.updateField ( product.getQuantity (), productModel.getQuantity (), product::setQuantity );
+            product.updateSpecialPrice ();
             return product;
         };
     }

@@ -22,7 +22,7 @@ public class ProductModel {
     private String name;
     private String image;
     @NotBlank (message = "product description is required")
-    @Size (min = 5, max = 20, message = "product description should be between 3 and 20 characters")
+    @Size (min = 3, max = 20, message = "product description should be between 3 and 20 characters")
     private String description;
     private Integer quantity;
     private BigDecimal price;

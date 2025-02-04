@@ -8,8 +8,10 @@ import com.rkecom.core.util.PaginationUtil;
 import com.rkecom.core.util.ResourceConstants;
 import com.rkecom.crud.core.service.FileService;
 import com.rkecom.crud.product.service.ProductService;
+import com.rkecom.data.product.repository.CartRepository;
 import com.rkecom.data.product.repository.CategoryRepository;
 import com.rkecom.data.product.repository.ProductRepository;
+import com.rkecom.db.entity.product.Cart;
 import com.rkecom.db.entity.product.Category;
 import com.rkecom.db.entity.product.Product;
 import com.rkecom.objects.product.mapper.ProductMapper;
@@ -25,7 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,6 +38,8 @@ public class ProductServiceImpl implements ProductService {
     private final CategoryRepository categoryRepository;
     private final FileService fileService;
     private final ProductMapper productMapper;
+    private final CartRepository cartRepository;
+    private final CartServiceImpl cartServiceImpl;
 
     @Value ( "${project.images}" )
     private String path;
@@ -52,12 +55,6 @@ public class ProductServiceImpl implements ProductService {
         }
         Product product=productMapper.toEntity().apply ( productModel );
         product.setCategory(category);
-        product.setSpecialPrice(
-                productModel.getPrice().multiply(
-                        productModel.getDiscount().multiply( BigDecimal.valueOf(0.01))
-                )
-        );
-
         return productMapper.toModel().apply ( productRepository.save ( product ) );
     }
 
@@ -103,8 +100,15 @@ public class ProductServiceImpl implements ProductService {
         if(isProductExistsWithName ( productModel.getName (), id )){
             throw new ApiException ( "Product already exists with name - "+productModel.getName () );
         }
-        Product updatedEntity = productMapper.toUpdatedEntity().apply ( existingProduct, productModel );
-        return productMapper.toModel().apply ( productRepository.save ( updatedEntity ) );
+        Product updatedProduct=productRepository.save ( productMapper.toUpdatedEntity().apply ( existingProduct, productModel ) );
+        updateCarts ( updatedProduct.getProductId () );
+        return productMapper.toModel().apply ( updatedProduct );
+    }
+
+    private void updateCarts(Long productId){
+        List< Cart > carts=cartRepository.findCartsByProductId(productId)
+                .orElseThrow (()->new ApiException ( "No carts found." ));
+        carts.forEach ( cart-> cartServiceImpl.updateProductInCarts ( cart.getCartId (), productId ));
     }
 
     @Override
@@ -113,6 +117,10 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById ( productId ).orElseThrow (
                 ()->new ResourceNotFoundException (ResourceConstants.PRODUCT, "id", productId)
         );
+        List<Cart> carts=cartRepository.findCartsByProductId ( productId )
+                .orElseThrow (()->new ApiException ( "No carts found." ));
+
+        carts.forEach ( cart -> cartServiceImpl.deleteProductFromCart ( productId, cart.getCartId () ) );
         productRepository.deleteById ( productId );
         return productMapper.toModel().apply ( product );
     }
