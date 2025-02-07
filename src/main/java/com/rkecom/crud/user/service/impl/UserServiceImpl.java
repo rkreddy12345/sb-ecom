@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
@@ -69,6 +70,11 @@ public class UserServiceImpl implements UserService {
                 : Sort.by ( Sort.Direction.DESC, sortBy );
         Page <User> userPage=userRepository.findAllExcludingRole ( RoleType.ADMIN , PageRequest.of ( pageNo, pageSize, sort ));
         return buildUserApiResponse(userPage);
+    }
+
+    @Override
+    public Optional <User> findByUsername ( String username ) {
+        return userRepository.findUserByUserName ( username );
     }
 
 

@@ -12,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
@@ -36,5 +38,10 @@ public class RoleServiceImpl implements RoleService {
             throw new ApiException ( "role already exists with "+role.getRoleType ().name () );
         }
         return roleRepository.save(role);
+    }
+
+    @Override
+    public List < Role > findAll ( ) {
+        return roleRepository.findAll ();
     }
 }

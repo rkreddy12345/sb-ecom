@@ -4,16 +4,17 @@ import com.rkecom.crud.user.service.RoleService;
 import com.rkecom.crud.user.service.UserService;
 import com.rkecom.db.entity.user.Role;
 import com.rkecom.db.entity.user.RoleType;
+import com.rkecom.db.entity.user.User;
 import com.rkecom.web.user.model.UserModel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 @Configuration
 @RequiredArgsConstructor
@@ -24,37 +25,51 @@ public class DataInitializerConfig {
     private final PasswordEncoder passwordEncoder;
 
     @Bean
-    @Profile ( "dev" )
-    public ApplicationRunner innitUserAndRoles() {
+    public ApplicationRunner initUserAndRoles() {
         return args -> {
-            Role userRole = roleService.save(new Role(RoleType.USER));
-            Role adminRole = roleService.save(new Role(RoleType.ADMIN));
-            Role sellerRole = roleService.save(new Role ( RoleType.SELLER));
+            List<Role> existingRoles = roleService.findAll();
+            List<RoleType> existingRoleTypes = existingRoles.stream()
+                    .map(Role::getRoleType)
+                    .toList ();
 
-            UserModel user1 = UserModel.builder()
-                    .userName("user1")
-                    .password(passwordEncoder.encode("user1pwd"))
-                    .email("user1@email.com")
-                    .roles(new ArrayList<>(List.of(userRole.getRoleType ().name ())))
-                    .build();
-            userService.save(user1);
+            List<Role> roles = Stream.of(RoleType.USER, RoleType.ADMIN, RoleType.SELLER)
+                    .filter(roleType -> !existingRoleTypes.contains(roleType))
+                    .map(Role::new)
+                    .map(roleService::save)
+                    .toList ();
 
-            UserModel admin1 = UserModel.builder()
-                    .userName("admin1")
-                    .password(passwordEncoder.encode("admin1pwd"))
-                    .email("admin@email.com")
-                    .roles(new ArrayList <> ( List.of(adminRole.getRoleType ().name ())))
-                    .build();
-            userService.save(admin1);
+            Role userRole = findRole(roles, existingRoles, RoleType.USER);
+            Role adminRole = findRole(roles, existingRoles, RoleType.ADMIN);
+            Role sellerRole = findRole(roles, existingRoles, RoleType.SELLER);
 
-            UserModel seller1 = UserModel.builder()
-                    .userName("seller1")
-                    .password(passwordEncoder.encode("seller1pwd"))
-                    .email("seller1@email.com")
-                    .roles(new ArrayList<>(List.of(sellerRole.getRoleType ().name ())))
-                    .build();
-            userService.save(seller1);
+            // Ensure users exist before saving new ones
+            createUserIfNotExists("user1", "user1pwd", "user1@email.com", userRole);
+            createUserIfNotExists("admin1", "admin1pwd", "admin@email.com", adminRole);
+            createUserIfNotExists("seller1", "seller1pwd", "seller1@email.com", sellerRole);
         };
     }
 
+    private Role findRole(List<Role> newRoles, List<Role> existingRoles, RoleType roleType) {
+        return existingRoles.stream()
+                .filter(role -> role.getRoleType() == roleType)
+                .findFirst()
+                .orElseGet(() -> newRoles.stream()
+                        .filter(role -> role.getRoleType() == roleType)
+                        .findFirst()
+                        .orElseThrow(() -> new RuntimeException("Role not found: " + roleType))
+                );
+    }
+
+    private void createUserIfNotExists(String username, String password, String email, Role role) {
+        Optional< User > existingUser = userService.findByUsername ( username );
+        if (existingUser.isEmpty()) {
+            UserModel user = UserModel.builder()
+                    .userName(username)
+                    .password(passwordEncoder.encode(password))
+                    .email(email)
+                    .roles(List.of(role.getRoleType().name()))
+                    .build();
+            userService.save(user);
+        }
+    }
 }
