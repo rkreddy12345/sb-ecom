@@ -31,7 +31,7 @@ public class User {
     @Column (name = "EMAIL", nullable = false, unique = true, length = 50)
     private String email;
 
-    @ManyToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
     @JoinTable(name = "USER_ROLE",
             joinColumns = @JoinColumn(name = "USER_ID"),
             inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
@@ -47,9 +47,12 @@ public class User {
     @ToString.Exclude
     private Cart cart;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "USER_ADDRESS",
-            joinColumns = @JoinColumn(name = "USER_ID"),
-            inverseJoinColumns = @JoinColumn(name = "ADDRESS_ID"))
+    @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, orphanRemoval = true)
+    @ToString.Exclude
     private List<Address> addresses = new ArrayList <> ();
+
+    public void addAddress(Address address) {
+        addresses.add(address);
+        address.setUser(this);  // Ensures bidirectional mapping
+    }
 }
