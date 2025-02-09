@@ -27,7 +27,7 @@ public class UserController extends BaseController {
             @RequestParam(defaultValue = PaginationUtil.DEFAULT_PAGE_SIZE) Integer size,
             @RequestParam(defaultValue = UserConstants.SORT_BY_ID ) String sortBy,
             @RequestParam(defaultValue = PaginationUtil.SORT_IN_ASC) String sortOrder) {
-            return ResponseEntity.ok (userService.getAllUsers(page, size, sortBy, sortOrder));
+            return ResponseEntity.ok (userService.getAllNonAdminUsers (page, size, sortBy, sortOrder));
     }
 
 }
