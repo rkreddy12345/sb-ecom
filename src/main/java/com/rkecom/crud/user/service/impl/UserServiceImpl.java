@@ -1,15 +1,18 @@
 package com.rkecom.crud.user.service.impl;
 
 import com.rkecom.core.exception.ApiException;
+import com.rkecom.core.exception.ResourceNotFoundException;
 import com.rkecom.core.response.ApiResponse;
 import com.rkecom.core.response.util.ApiResponseUtil;
 import com.rkecom.core.util.PaginationUtil;
+import com.rkecom.core.util.ResourceConstants;
 import com.rkecom.crud.user.service.UserService;
 import com.rkecom.data.user.repository.UserRepository;
 import com.rkecom.db.entity.user.RoleType;
 import com.rkecom.db.entity.user.User;
 import com.rkecom.objects.user.mapper.UserMapper;
 import com.rkecom.web.user.model.UserModel;
+import com.rkecom.web.user.model.UserModelWithoutRoles;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,6 +78,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public Optional <User> findByUsername ( String username ) {
         return userRepository.findUserByUserName ( username );
+    }
+
+    @Override
+    public UserModelWithoutRoles getCurrentUserAddresses ( String username ) {
+        User user = userRepository.findUserByUserName(username).orElseThrow (
+                ()->new ResourceNotFoundException ( ResourceConstants.USER, "username", username )
+        );
+        return userMapper.toUserModelWithoutRoles ().apply ( user );
     }
 
 

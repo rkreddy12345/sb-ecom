@@ -5,7 +5,9 @@ import com.rkecom.db.entity.user.Role;
 import com.rkecom.db.entity.user.RoleType;
 import com.rkecom.db.entity.user.User;
 import com.rkecom.security.userdetails.EcomUserDetails;
+import com.rkecom.web.user.model.AddressModel;
 import com.rkecom.web.user.model.UserModel;
+import com.rkecom.web.user.model.UserModelWithoutRoles;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -18,6 +20,7 @@ import java.util.function.Function;
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class UserMapper {
     private final RoleService roleService;
+    private final AddressMapper addressMapper;
     public Function< UserModel, User > toEntity(){
        return userModel -> {
            List < Role > roles = userModel.getRoles ().stream ()
@@ -77,5 +80,21 @@ public class UserMapper {
                         .map(authority -> authority.getAuthority())
                         .toList())
                 .build();
+    }
+
+    // Map User to UserModelWithoutRoles (excluding roles)
+    public Function<User, UserModelWithoutRoles> toUserModelWithoutRoles() {
+        return user -> {
+            List<AddressModel> addressModels = user.getAddresses().stream()
+                    .map(address -> addressMapper.toModel ().apply ( address ))
+                    .toList ();
+
+            return UserModelWithoutRoles.builder()
+                    .userId(user.getUserId())
+                    .userName(user.getUserName())
+                    .email(user.getEmail())
+                    .addresses(addressModels)
+                    .build();
+        };
     }
 }

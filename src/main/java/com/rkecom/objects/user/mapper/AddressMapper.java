@@ -28,8 +28,6 @@ public class AddressMapper {
                 .state ( address.getState () )
                 .country ( address.getCountry () )
                 .pincode ( address.getPincode () )
-                .userName ( address.getUser ().getUserName () )
-                .email ( address.getUser ().getEmail () )
                 .build ();
     }
 }
