@@ -35,4 +35,10 @@ public class AddressController extends BaseController {
         List<AddressModel> addressModels=addressService.getUserAddresses(user.getUserId ());
         return new ResponseEntity <> ( addressModels, HttpStatus.OK );
     }
+
+    @GetMapping("/address/{addressId}")
+    public ResponseEntity<AddressModel> getAddressById(@PathVariable Long addressId){
+        return ResponseEntity.ok (addressService.getAddressById ( addressId ));
+    }
+
 }

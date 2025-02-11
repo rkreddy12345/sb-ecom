@@ -9,4 +9,5 @@ public interface AddressService {
     AddressModel createAddress ( AddressModel address, User user );
 
     List< AddressModel> getUserAddresses ( Long userId );
+    AddressModel getAddressById ( Long addressId );
 }

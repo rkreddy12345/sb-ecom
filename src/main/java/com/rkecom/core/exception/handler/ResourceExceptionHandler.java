@@ -3,10 +3,12 @@ package com.rkecom.core.exception.handler;
 import com.rkecom.core.response.ErrorResponse;
 import com.rkecom.core.response.util.ErrorResponseUtil;
 import com.rkecom.core.exception.ResourceNotFoundException;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+@Order(1)
 @RestControllerAdvice
 public class ResourceExceptionHandler {
     @ExceptionHandler ( ResourceNotFoundException.class)

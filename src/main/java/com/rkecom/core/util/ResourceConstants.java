@@ -7,6 +7,7 @@ public class ResourceConstants {
     public static final String CATEGORY="Category";
     public static final String CART="Cart";
     public static final String CART_ITEM="CartItem";
+    public static final String ADDRESS="Address";
 
     private ResourceConstants() {
         throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");

@@ -1,6 +1,8 @@
 package com.rkecom.crud.user.service.impl;
 
 import com.rkecom.core.exception.ApiException;
+import com.rkecom.core.exception.ResourceNotFoundException;
+import com.rkecom.core.util.ResourceConstants;
 import com.rkecom.crud.user.service.AddressService;
 import com.rkecom.data.user.repository.AddressRepository;
 import com.rkecom.data.user.repository.UserRepository;
@@ -44,6 +46,14 @@ public class AddressServiceImpl implements AddressService {
         List<Address> userAddresses = addressRepository.findAddressByUserId ( userId );
         Function<Address, AddressModel> modelMapper=addressMapper.toModel ();
         return userAddresses.stream ().map ( modelMapper ).toList ();
+    }
+
+    @Override
+    public AddressModel getAddressById ( Long addressId ) {
+        Address address=addressRepository.getAddressesByAddressId(addressId).orElseThrow (
+                ()->new ResourceNotFoundException ( ResourceConstants.ADDRESS, "addressId", addressId )
+        );
+        return addressMapper.toModel().apply(address);
     }
 
 }
