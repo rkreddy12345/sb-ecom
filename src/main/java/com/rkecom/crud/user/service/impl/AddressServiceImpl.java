@@ -56,4 +56,15 @@ public class AddressServiceImpl implements AddressService {
         return addressMapper.toModel().apply(address);
     }
 
+    @Override
+    @Transactional
+    public AddressModel updateAddressById ( Long addressId, AddressModel addressModel ) {
+        Address address=addressRepository.findById ( addressId ).orElseThrow (
+                ()-> new ResourceNotFoundException ( ResourceConstants.ADDRESS, "addressId", addressId)
+        );
+        Address updateEntity=addressMapper.toUpdatedEntity ().apply ( address, addressModel );
+        Address updatedAddress=addressRepository.save ( updateEntity );
+        return addressMapper.toModel().apply(updatedAddress);
+    }
+
 }

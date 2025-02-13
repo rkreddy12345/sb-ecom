@@ -41,4 +41,9 @@ public class AddressController extends BaseController {
         return ResponseEntity.ok (addressService.getAddressById ( addressId ));
     }
 
+    @PutMapping("/address/{addressId}")
+    public ResponseEntity<AddressModel> updateAddressById(@PathVariable Long addressId, @Valid @RequestBody AddressModel address){
+        return ResponseEntity.ok(addressService.updateAddressById(addressId, address));
+    }
+
 }

@@ -26,7 +26,7 @@ public class CategoryMapper {
 
     public final BiFunction<Category, CategoryModel, Category> toUpdatedEntity(){
         return (category, categoryModel)-> {
-            MapperUtil.updateField ( category.getName (), categoryModel.getName (), category::setName);
+            MapperUtil.updateField (  categoryModel.getName (), category::setName);
             return category;
         };
     }

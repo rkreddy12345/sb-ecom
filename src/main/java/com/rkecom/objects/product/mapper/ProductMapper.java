@@ -46,12 +46,12 @@ public class ProductMapper {
 
     public final BiFunction<Product, ProductModel, Product> toUpdatedEntity(){
         return ( product, productModel ) -> {
-            MapperUtil.updateField ( product.getName (), productModel.getName (), product::setName );
-            MapperUtil.updateField ( product.getDescription (), productModel.getDescription (), product::setDescription );
-            MapperUtil.updateField ( product.getImage (), productModel.getImage (), product::setImage );
-            MapperUtil.updateField ( product.getPrice (), productModel.getPrice (), product::setPrice );
-            MapperUtil.updateField ( product.getDiscount (), productModel.getDiscount (), product::setDiscount );
-            MapperUtil.updateField ( product.getQuantity (), productModel.getQuantity (), product::setQuantity );
+            MapperUtil.updateField ( productModel.getName (), product::setName );
+            MapperUtil.updateField ( productModel.getDescription (), product::setDescription );
+            MapperUtil.updateField ( productModel.getImage (), product::setImage );
+            MapperUtil.updateField ( productModel.getPrice (), product::setPrice );
+            MapperUtil.updateField ( productModel.getDiscount (), product::setDiscount );
+            MapperUtil.updateField ( productModel.getQuantity (), product::setQuantity );
             product.updateSpecialPrice ();
             return product;
         };

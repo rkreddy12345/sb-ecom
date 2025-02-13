@@ -10,4 +10,6 @@ public interface AddressService {
 
     List< AddressModel> getUserAddresses ( Long userId );
     AddressModel getAddressById ( Long addressId );
+
+    AddressModel updateAddressById ( Long addressId, AddressModel addressModel );
 }
