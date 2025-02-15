@@ -12,4 +12,5 @@ public interface AddressService {
     AddressModel getAddressById ( Long addressId );
 
     AddressModel updateAddressById ( Long addressId, AddressModel addressModel );
+    AddressModel deleteAddressById ( Long addressId );
 }

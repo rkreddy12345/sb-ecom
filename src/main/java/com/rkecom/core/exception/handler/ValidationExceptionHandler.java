@@ -5,6 +5,7 @@ import com.rkecom.core.response.util.ErrorConstants;
 import com.rkecom.core.response.util.ErrorResponseUtil;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -15,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Order(1)
 @RestControllerAdvice
 public class ValidationExceptionHandler {
     @ExceptionHandler ( MethodArgumentNotValidException.class)

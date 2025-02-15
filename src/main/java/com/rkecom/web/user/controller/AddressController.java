@@ -46,4 +46,9 @@ public class AddressController extends BaseController {
         return ResponseEntity.ok(addressService.updateAddressById(addressId, address));
     }
 
+    @DeleteMapping("/address/{addressId}")
+    public ResponseEntity<AddressModel> deleteAddressById(@PathVariable Long addressId){
+        return ResponseEntity.ok (addressService.deleteAddressById ( addressId ));
+    }
+
 }

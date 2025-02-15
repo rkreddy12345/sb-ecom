@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@Order(1)
+@Order(2)
 @RestControllerAdvice
 public class ResourceExceptionHandler {
     @ExceptionHandler ( ResourceNotFoundException.class)
