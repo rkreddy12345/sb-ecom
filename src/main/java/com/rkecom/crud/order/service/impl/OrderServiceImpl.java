@@ -31,6 +31,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class OrderServiceImpl implements OrderService {
+
     private final OrderRepository orderRepository;
     private final CartService cartService;
     private final CartRepository cartRepository;
@@ -41,64 +42,71 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public OrderModel placeOrder(String email, OrderRequest orderRequest, String paymentType) {
-        Cart cart = cartRepository.findCartByEmail(email).orElseThrow(
-                () -> new ResourceNotFoundException(ResourceConstants.CART, "email", email)
-        );
-        List<CartItem> cartItems = cart.getCartItems();
-        if(cartItems.isEmpty ()){
-            throw new ApiException ( "cart is empty" );
+        Cart cart = getCartByEmail(email);
+        if (cart.getCartItems().isEmpty()) {
+            throw new ApiException("Cart is empty");
         }
-        Address address = addressRepository.findById(orderRequest.getAddressId()).orElseThrow(
-                () -> new ResourceNotFoundException(ResourceConstants.ADDRESS, "id", orderRequest.getAddressId())
-        );
 
-        // Create Order
+        Address shippingAddress = getAddressById(orderRequest.getAddressId());
+        Order order = createOrder(email, cart, shippingAddress);
+        Payment payment = createPayment(orderRequest, paymentType);
+        order.setPayment(payment);
+        payment.setOrder(order);
+
+        processOrderItems(cart, order);
+        updateProductInventoryAndClearCart(cart);
+
+        order = orderRepository.save(order);
+        return orderMapper.toModel().apply(order);
+    }
+
+    private Cart getCartByEmail(String email) {
+        return cartRepository.findCartByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException(ResourceConstants.CART, "email", email));
+    }
+
+    private Address getAddressById(Long addressId) {
+        return addressRepository.findById(addressId)
+                .orElseThrow(() -> new ResourceNotFoundException(ResourceConstants.ADDRESS, "id", addressId));
+    }
+
+    private Order createOrder(String email, Cart cart, Address shippingAddress) {
         Order order = new Order();
         order.setEmail(email);
         order.setOrderDate(LocalDate.now());
         order.setTotalAmount(cart.getTotalPrice());
-        order.setShippingAddress(address);
-        order.setOrderStatus("order accepted");
+        order.setShippingAddress(shippingAddress);
+        order.setOrderStatus("Order Accepted");
+        return order;
+    }
 
-        // Create Payment and Associate it with Order
+    private Payment createPayment(OrderRequest orderRequest, String paymentType) {
         Payment payment = new Payment();
         payment.setPaymentType(paymentType);
         payment.setPgName(orderRequest.getPgName());
         payment.setPgStatus(orderRequest.getPgStatus());
         payment.setPgPaymentId(orderRequest.getPgPaymentId());
+        return payment;
+    }
 
-        order.setPayment(payment); // Associate payment with order
-        payment.setOrder(order); // Bidirectional link
-
-        // Process Order Items
-        for (CartItem cartItem : cartItems) {
+    private void processOrderItems(Cart cart, Order order) {
+        for (CartItem cartItem : cart.getCartItems()) {
             OrderItem orderItem = new OrderItem();
             orderItem.setProduct(cartItem.getProduct());
             orderItem.setQuantity(cartItem.getQuantity());
             orderItem.setPrice(cartItem.getPrice());
             orderItem.setDiscount(cartItem.getDiscount());
-
-            order.addOrderItem(orderItem); // Ensures bidirectional mapping
+            order.addOrderItem(orderItem);
         }
-
-        // Persist Order (Cascades OrderItems and Payment)
-        order = orderRepository.save(order);
-
-        // Update Product Inventory and Remove from Cart
-        List<CartItem> itemsToRemove = new ArrayList <> (cartItems); // Avoid modifying cartItems during iteration
-
-        for (CartItem cartItem : itemsToRemove) {
-            Product product = cartItem.getProduct();
-            product.setQuantity(product.getQuantity() - cartItem.getQuantity());
-            productRepository.save(product); // Save the updated quantity
-
-            cartService.deleteProductFromCart(product.getProductId());
-        }
-
-
-
-        return orderMapper.toModel().apply(order);
     }
 
-
+    private void updateProductInventoryAndClearCart(Cart cart) {
+        List<CartItem> cartItems = new ArrayList<>(cart.getCartItems()); // Prevent modification during iteration
+        for (CartItem cartItem : cartItems) {
+            Product product = cartItem.getProduct();
+            product.setQuantity(product.getQuantity() - cartItem.getQuantity());
+            productRepository.save(product);
+            cartService.deleteProductFromCart(product.getProductId());
+        }
+    }
 }
