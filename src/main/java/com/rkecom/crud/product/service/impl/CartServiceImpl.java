@@ -70,10 +70,16 @@ public class CartServiceImpl implements CartService {
             else {
                 // Update quantity, price, and discount
                 item.setQuantity(newQuantity);
-                item.setPrice(product.getSpecialPrice ());
+                item.setPrice(product.getSpecialPrice());
                 item.setDiscount(product.getDiscount());
-                cart.addItem ( item );
+
+                // Explicitly save item to ensure update in DB
+                cartItemRepository.save(item);
+
+                // Ensure total price is updated
+                cart.updateTotalPrice();
             }
+
         } else {
             // Validate stock for new item
             if (product.getQuantity() < quantity) throw new ApiException("Insufficient stock.");
@@ -97,15 +103,25 @@ public class CartServiceImpl implements CartService {
 
     @Override
     @Transactional
-    public CartModel deleteProductFromCart ( Long productId ) {
-        String email=getCurrentUser ().getEmail ();
+    public CartModel deleteProductFromCart(Long productId) {
+        String email = getCurrentUser().getEmail();
+
+        //  Fetch Cart (with cart items)
         Cart cart = cartRepository.findCartByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException ( ResourceConstants.CART, "email", email));
-        CartItem cartItem=cartItemRepository.findByProductIdAndCartId(productId, cart.getCartId())
-                .orElseThrow (()->new ResourceNotFoundException ( ResourceConstants.CART_ITEM, "productId", productId ));
-        cart.removeItem ( cartItem );
+                .orElseThrow(() -> new ResourceNotFoundException(ResourceConstants.CART, "email", email));
+
+        //  Find CartItem from the already loaded Cart items (NO extra DB call)
+        CartItem cartItem = cart.getCartItems().stream()
+                .filter(item -> item.getProduct().getProductId().equals(productId))
+                .findFirst()
+                .orElseThrow(() -> new ResourceNotFoundException(ResourceConstants.CART_ITEM, "productId", productId));
+
+        cart.removeItem(cartItem); //  Removes the item from cart
+        cartRepository.save(cart); //  Saves the cart
+
         return cartMapper.toModel().apply(cart);
     }
+
 
     @Override
     @Transactional

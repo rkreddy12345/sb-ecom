@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 @Builder
-public class UserInfoResponse {
+public class AuthenticationResponse {
     private Long id;
     private String token;
     private String username;

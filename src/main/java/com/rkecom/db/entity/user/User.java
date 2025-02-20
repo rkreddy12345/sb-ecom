@@ -45,6 +45,7 @@ public class User {
             cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE},
             orphanRemoval = true)
     @ToString.Exclude
+    @EqualsAndHashCode.Exclude
     private Cart cart;
 
     @OneToMany(mappedBy = "user", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, orphanRemoval = true)

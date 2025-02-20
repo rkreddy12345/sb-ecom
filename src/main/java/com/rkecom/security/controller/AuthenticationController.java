@@ -10,7 +10,7 @@ import com.rkecom.db.entity.user.RoleType;
 import com.rkecom.security.auth.util.JwtUtil;
 import com.rkecom.web.security.model.LoginRequest;
 import com.rkecom.web.security.model.SignupRequest;
-import com.rkecom.web.security.model.UserInfoResponse;
+import com.rkecom.web.security.model.AuthenticationResponse;
 import com.rkecom.security.userdetails.EcomUserDetails;
 import com.rkecom.web.user.model.UserModel;
 import jakarta.validation.Valid;
@@ -119,7 +119,7 @@ public class AuthenticationController extends BaseController {
                 .stream ().map ( GrantedAuthority::getAuthority )
                 .toList ();
 
-        UserInfoResponse response=UserInfoResponse.builder ()
+        AuthenticationResponse response= AuthenticationResponse.builder ()
                 .id ( userDetails.getUserId () )
                 .token ( jwtToken )
                 .username ( userDetails.getUsername () )

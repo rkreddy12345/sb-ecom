@@ -11,8 +11,8 @@ import java.util.Optional;
 
 @Repository
 public interface CartRepository extends BaseRepository< Cart, Long> {
-    @Query("select c from Cart c where c.user.email=:email")
-    Optional <Cart> findCartByEmail( @Param("email") String email);
+    @Query("select c from Cart c left join fetch c.cartItems where c.user.email = :email")
+    Optional<Cart> findCartByEmail(@Param("email") String email);
 
     @Query("select c from Cart c join fetch c.cartItems ci join fetch ci.product p where p.productId=:productId")
     Optional< List <Cart> > findCartsByProductId( @Param("productId") Long productId);

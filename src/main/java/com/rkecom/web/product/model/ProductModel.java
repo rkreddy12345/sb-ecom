@@ -18,11 +18,11 @@ import java.math.BigDecimal;
 public class ProductModel {
     private Long productId;
     @NotBlank (message = "Product name is required")
-    @Size (min = 3, max = 10, message = "product name should be between 3 and 10 characters")
+    @Size (min = 3, max = 20, message = "product name should be between 3 and 20 characters")
     private String name;
     private String image;
     @NotBlank (message = "product description is required")
-    @Size (min = 3, max = 20, message = "product description should be between 3 and 20 characters")
+    @Size (min = 5, max = 30, message = "product description should be between 5 and 30 characters")
     private String description;
     private Integer quantity;
     private BigDecimal price;
